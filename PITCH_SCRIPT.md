@@ -1,57 +1,72 @@
-# Liquidity Clock — 2:20 Pitch Script
+# Liquidity Clock — Final Pitch Script
 
-**Target:** 2:10–2:30. Do not exceed 3:00.
+**Target:** ~2:15. Hard cap: under 3:00.
 
 ## 0:00–0:15 — Hook
 
-Treasury teams usually ask how much liquidity they have. Under stress, I think the more important question is: **will that liquidity actually arrive before the current buffer runs out?**
+Most treasury tools tell you how much liquidity you have.
 
-That is the problem behind Liquidity Clock.
+But during stress, I think the more important question is different: **will that liquidity actually arrive before the current buffer runs out?**
 
-## 0:15–0:42 — Problem
+That is why I built Liquidity Clock.
 
-A digital-asset treasury can hold funds across wallets, exchanges, stablecoins, tokenized assets and bank rails. On paper, the total can look comfortable. But those sources do not become usable at the same speed.
+## 0:15–0:38 — Problem
 
-A treasury can therefore have enough liquidity in aggregate and still face a timing gap.
+A digital-asset treasury can hold money across wallets, exchanges, stablecoins, tokenized assets and bank rails.
 
-## 0:42–1:00 — Founder insight
+The total balance may look safe, but these sources do not become usable at the same speed.
 
-My background is in banking and financial-stability research. That work made me focus less on nominal liquidity and more on **executable liquidity** — what can actually become usable by the required horizon.
+So you can have enough liquidity on paper and still run out of time.
 
-I wanted to turn that question into a practical product rather than another research dashboard.
+## 0:38–0:55 — Why me
 
-## 1:00–1:32 — Product
+My background is in finance and banking, and I have been working on financial-stability and liquidity questions.
 
-Liquidity Clock compares two clocks: the time until the current executable buffer is exhausted, and the time until additional liquidity becomes usable.
+I kept coming back to the same practical point: available liquidity is not the same as **executable liquidity**.
+
+I wanted to turn that into a product, not another research dashboard.
+
+## 0:55–1:28 — Product
+
+Liquidity Clock compares two things:
+
+- how long the current executable buffer lasts;
+- when the next usable liquidity actually arrives.
 
 The difference is the **Survival Gap**.
 
-In the main synthetic stress case, the buffer lasts 10 minutes but the next committed liquidity arrives in 17. The gap is minus seven minutes.
+In the main synthetic scenario, the buffer lasts 10 minutes and the next committed liquidity arrives in 17.
 
-The engine then tests available routes and identifies the fastest sufficient intervention.
+So the Survival Gap is **minus 7 minutes**.
 
-## 1:32–1:52 — Solana
+The engine then checks available routes and finds the fastest sufficient intervention.
 
-For the MVP, Solana is not just a label on the UI. The product connects to a development Phantom wallet, submits a real Devnet transaction, waits for confirmation, records the signature, slot and execution time, and only then recalculates the liquidity state.
+## 1:28–1:48 — Solana
 
-That gives the demo a verifiable execution layer.
+For this MVP, Solana is the verifiable execution rail.
 
-## 1:52–2:10 — Market / wedge
+The app connects to a development Phantom wallet, submits a real Devnet transaction, waits for confirmation, records the signature, slot and execution time, and only then changes the modeled liquidity state.
 
-I am not trying to replace custody platforms or full treasury-management systems. Liquidity Clock is a stress-time decision layer that can sit above them.
+The financial scenario remains synthetic and clearly labeled.
 
-The initial users are digital-asset treasury and liquidity-risk teams that manage resources across several rails.
+## 1:48–2:04 — Market
 
-## 2:10–2:20 — Vision
+I am not trying to replace Fireblocks, custody platforms or a full treasury-management system.
 
-The longer-term goal is simple: normalize not only **how much** liquidity exists, but **when it can actually be executed** — across on-chain and off-chain rails.
+Liquidity Clock is a stress-time decision layer that can sit above them.
 
-**Liquidity Clock: amount × executability × time.**
+The first users I am targeting are treasury and liquidity-risk teams at digital-asset companies.
+
+## 2:04–2:15 — Vision
+
+The long-term idea is simple: normalize not only **how much** liquidity exists, but **when it can actually be executed** across different rails.
+
+**Liquidity Clock — amount, executability and time.**
 
 ## Validation insertion rule
 
-Add one short sentence only after verified responses exist. Example structure:
+Insert only one sentence after real responses exist, ideally after the founder section:
 
-> We spoke with [verified number] people across [verified roles], and the recurring issue was [verified recurring feedback].
+> I also spoke with [verified number] people across [verified roles], and the recurring issue was [verified theme].
 
-Do not invent traction, customers, revenue, or willingness to pay.
+Do not invent traction, customers, revenue, quotes or willingness to pay.
