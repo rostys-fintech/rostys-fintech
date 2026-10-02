@@ -1,42 +1,58 @@
-# Rostyslav Honcharenko
+# Liquidity Clock
 
-**Finance & banking researcher focused on financial stability, digital finance and systemic resilience.**
+**Will executable liquidity arrive before your buffer runs out?**
 
-I am a Master's student in Finance at Sumy State University, currently building experience across banking practice, financial-stability analysis and applied research.
+Liquidity Clock is a public-safe synthetic stress engine for digital-asset treasuries. It compares current executable liquidity with stress outflow velocity, walks committed liquidity routes chronologically, identifies the first binding timing gap, and tests available interventions.
 
-- **Financial Stability Intern** — National Bank of Ukraine
-- **Former Chief Economist, MSME** — Oschadbank
-- **Research interests:** bank resilience, digitalisation, systemic risk, FinTech and operational resilience
-- **International academic experience:** Erasmus+ at the University of Jaén and an international summer school at the University of Latvia
+## Core metric
 
-## Current research
+`Survival Gap = buffer-exhaustion time − next committed liquidity arrival time`
 
-### What affects bank resilience and the role of digitalisation in it.
-Ongoing empirical bank-level research on the Ukrainian banking system, examining which pre-war financial and institutional characteristics were associated with resilience during the full-scale-war period and the incremental role of digital capability.
+A negative gap means the treasury exhausts its executable buffer before the next committed source becomes usable.
 
-### Resilience Atlas — Systemic Cloud Resilience Lab
-An interactive research prototype exploring systemic concentration risk when financial institutions depend on shared cloud infrastructure.
+## Golden demo
 
-The prototype operationalises the **Systemic Cloud Failover Reserve (SCFR)** concept and compares alternative recovery mechanisms under a common provider shock.
+- Operating liquidity: **1.50M LQUSD**
+- Stress outflow: **150k LQUSD/min**
+- Buffer horizon: **10 min**
+- Next committed liquidity: **17 min**
+- Initial Survival Gap: **−7 min**
+- Available intervention: **3.15M LQUSD Solana reserve (synthetic notional)**
+- After confirmed execution proof: operating liquidity **4.65M**, buffer horizon **31 min**, Survival Gap **+14 min**
 
-- **Live prototype:** https://rostys-fintech.github.io/cloudrescue-scfr/
-- **Repository:** https://github.com/rostys-fintech/cloudrescue-scfr
+## Real Solana Devnet proof
 
-## Selected publications
+The browser adapter connects to Phantom and sends a **real 0.00315 Devnet SOL transfer** to an ephemeral demo recipient. The transaction is signed by the connected development wallet, submitted to Solana Devnet, confirmed, and surfaced with a real signature, slot, timing and Explorer link.
 
-- **Необанки як драйвери цифрової фінансової інфраструктури України** — *Актуальні питання економічних наук*, No. 11, 2025  
-  https://doi.org/10.5281/zenodo.15618025
+The **3.15M LQUSD** amount is synthetic stress-test notional. It is deliberately not represented as a real-valued token. The engine does **not** apply the scenario intervention until the real Devnet proof transaction confirms.
 
-- **РОЛЬ ЕМОЦІЙ У БАНКІВСЬКОМУ МАРКЕТИНГУ: ВПЛИВ НА РІШЕННЯ КЛІЄНТІВ** — conference proceedings, Sumy State University, 2024  
-  https://essuir.sumdu.edu.ua/bitstream/123456789/98259/1/Digital_Transformations_2024.pdf
+## Run locally
 
-- **НОВОВВЕДЕННЯ У 2022 РОЦІ В ОПОДАТКУВАННІ ФІЗИЧНИХ ОСІБ-ПІДПРИЄМЦІВ** — *Перший крок у науку*, Sumy State University, 2022  
-  https://studconf.sumdu.edu.ua/2022/zbornik_pershiu_2022.pdf
+```bash
+python3 -m http.server 8080
+```
 
-## What I use GitHub for
+Then open `http://localhost:8080`.
 
-This profile is primarily a **research and project portfolio** rather than a traditional software-engineering portfolio. I use GitHub to make research concepts, analytical methods and interactive prototypes easier to inspect and reproduce.
+## Demo flow
 
-## Connect
+1. Open **Timing Stress**.
+2. Observe the initial `−7 min` Survival Gap.
+3. Connect a development-only Phantom wallet on Solana Devnet.
+4. Execute the proof transaction.
+5. Wait for confirmed settlement.
+6. Observe the recalculated `+14 min` Survival Gap and transaction proof.
 
-- **LinkedIn:** https://www.linkedin.com/in/rostyslav-honcharenko/
+See [`DEMO.md`](DEMO.md) for the 90-second judge flow.
+
+## Hackathon provenance
+
+See [`HACKATHON_DISCLOSURE.md`](HACKATHON_DISCLOSURE.md) for the separation between pre-existing research insight and the public product/code built for the hackathon.
+
+## Public-safety boundary
+
+All institutions, balances, rates, routes and timings in the public MVP are synthetic. The product does not reproduce unpublished R3/JFS case reconstructions, tables, manuscript text or reviewer-sensitive assets.
+
+## License
+
+MIT.
