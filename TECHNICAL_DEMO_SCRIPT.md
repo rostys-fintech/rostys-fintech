@@ -1,89 +1,46 @@
 # Liquidity Clock — Final Technical Demo Script
 
-**Target:** ~2:20. Hard cap: under 3:00.
+**Target:** ~1:50–2:15. Hard cap: under 3:00.
 
-## 0:00–0:12 — Open Timing Stress
+## 0:00–0:15 — Timing Stress
 
-Show the hero screen.
+> This is Liquidity Clock. The current executable buffer lasts ten minutes. The next committed liquidity arrives in seventeen, so the Survival Gap is minus seven minutes.
 
-> This is Liquidity Clock. The current executable buffer lasts 10 minutes, while the next committed liquidity arrives in 17. The Survival Gap is minus 7 minutes.
+## 0:15–0:35 — Routes
 
-## 0:12–0:35 — Show route logic
+Show Operating Wallet, Solana Reserve, scheduled CEX reserve and slower standby routes.
 
-Scroll to **Liquidity routes**.
+> The engine separates what is executable now, what is available, and what is scheduled. It walks the timing sequence and finds the first binding gap.
 
-> The engine separates liquidity that is executable now, available but not yet activated, scheduled, and standby. It walks committed routes in time order and identifies the first binding gap.
+## 0:35–0:50 — Recommendation
 
-Briefly point to the highlighted Solana Reserve.
+> The Solana reserve is the fastest sufficient route in this scenario. The projected effect is minus seven minutes to plus fourteen.
 
-## 0:35–0:52 — Recommendation
+## 0:50–1:10 — One-click execution
 
-Show **Recommended Action**.
+Click **Run Live Devnet Proof**.
 
-> Here the fastest sufficient intervention is the Solana reserve. The modeled effect is from minus 7 minutes to plus 14.
-
-Do not execute yet.
-
-## 0:52–1:08 — Verify Devnet / connect Phantom
-
-Click **Solana Devnet** so the RPC status visibly refreshes.
-
-Click **Connect Phantom**.
-
-> The public MVP uses a development Phantom wallet and Solana Devnet only. No mainnet funds are required.
-
-If the wallet needs test SOL, click **Fund Devnet** before recording the main execution sequence, so the final video stays clean.
-
-## 1:08–1:42 — Execute real proof
-
-Click **Execute Devnet Proof**.
-
-Show Phantom approval, then return to the app.
-
-Let the UI visibly progress through:
-
-**Prepare → Sign → Submit → Confirm → Complete**
-
-> The transaction is signed in Phantom, submitted to Solana Devnet and confirmed before the modeled liquidity state can change.
-
-## 1:42–2:03 — Show proof
-
-Keep the Execution Proof section visible.
+> No browser wallet is required. The app creates a temporary Devnet keypair in memory, requests test SOL if needed and signs the proof transaction locally.
 
 Show:
+`Prepare → Sign → Submit → Confirm → Complete`.
 
-- `CONFIRMED`;
-- execution time;
-- transaction slot;
-- real signature;
-- **View on Explorer**.
+## 1:10–1:35 — Proof
 
-Open Explorer briefly if recording flow allows.
+Show `CONFIRMED`, execution time, slot, signature and Explorer.
 
-> The app surfaces the real signature, slot and execution time, so the execution proof is independently verifiable.
+> This is a real Solana Devnet transaction. The test-SOL transfer verifies the execution path and timing. The LQUSD treasury amounts remain clearly synthetic.
 
-## 2:03–2:19 — Before / After
+## 1:35–1:55 — Before / After
 
-Return to the product state.
+> Only after confirmation does the synthetic executable balance move from 1.5 to 4.65 million. Buffer runway moves from ten to thirty-one minutes and the Survival Gap changes from minus seven to plus fourteen.
 
-> Only after confirmation does the synthetic scenario update. Executable liquidity moves from 1.5 to 4.65 million, the buffer horizon from 10 to 31 minutes, and the Survival Gap from minus 7 to plus 14.
+## 1:55–2:05 — Custom Stress
 
-## 2:19–2:27 — Close
+Optionally switch to Custom Stress and change Reserve ETA.
 
-> The MVP is deliberately narrow: transparent stress logic, explicit route timing and verifiable execution. The institutional amounts are synthetic; the Devnet transaction is real execution evidence.
+> The recommendation is not hard-coded. If the reserve arrives after the buffer is exhausted, the engine refuses to recommend it.
 
-## OPTIONAL 10-SECOND GENERALIZATION SHOT
+## Final rule
 
-Only if the video remains comfortably under 3:00:
-
-Open **Custom Stress**, change one input, click **Recalculate scenario**, and show that the Survival Gap and recommendation change.
-
-This demonstrates the engine is not hard-coded to the headline demo.
-
-## HARD RULES FOR FINAL VIDEO
-
-- Show a real confirmed Devnet transaction.
-- Do not use a mock signature or fake Explorer link.
-- Do not imply the `3.15M LQUSD` synthetic scenario amount moved on-chain.
-- The real transaction is Devnet test-SOL execution / settlement proof.
-- Keep Phantom seed phrase, private keys and sensitive wallet information off-screen.
+The final video must show a real confirmed Devnet transaction with a real Explorer link. Do not use a placeholder or simulated signature.
