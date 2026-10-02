@@ -1,56 +1,47 @@
 # Liquidity Clock — Interaction QA
 
-Status: PASS for static interaction wiring and deterministic engine checks. Final live-chain verification still requires a real development Phantom signature in the user's browser.
+Status: PASS for static interaction wiring, deterministic engine checks and self-contained Devnet execution architecture.
 
 ## Verified
 
 - JavaScript syntax passes for `engine.js`, `solana-adapter.js`, and `app.js`.
-- All JavaScript DOM references resolve to existing IDs in `index.html`.
-- All button IDs have explicit click handlers or dedicated scenario handlers.
-- Scenario selector wiring is present for Safe, Timing Stress, On-chain Rescue, and Custom Stress.
-- `Solana Devnet` is a real button and refreshes RPC status.
-- `SYNTHETIC SCENARIO` is a real disclosure button with an explanatory popover.
-- `Connect Phantom`, `Fund Devnet`, `Execute Devnet Proof`, `Recalculate scenario`, and `Copy signature` have explicit interaction logic.
-- Disabled states are used for actions that are not currently executable.
-- Faucet fallback appears on Devnet funding failure.
-- Explorer and signature controls remain hidden until a confirmed proof exists.
-- Custom scenario inputs use valid default values and input validation.
-- State reset clears stale notices and stale transaction proof values when switching scenarios.
-- The Mac launcher now selects a free local port, opens Chrome when available, and cleans up the local server on exit.
+- All current app DOM references resolve to IDs in `index.html`.
+- Scenario selector wiring exists for Safe, Timing Stress, On-chain Rescue and Custom Stress.
+- `Solana Devnet` is a real RPC-status control.
+- `SYNTHETIC SCENARIO` is a real disclosure control.
+- `Run Live Devnet Proof`, `Recalculate scenario`, and `Copy signature` have explicit interaction logic.
+- Phantom / user-wallet controls are removed from the visible flow.
+- The proof path creates a temporary in-memory Devnet keypair and does not persist or expose its private key.
+- If funding is needed, the proof path requests Devnet test SOL automatically.
+- The scenario balance changes only after a real confirmed Devnet transaction.
+- Explorer and signature controls remain hidden until confirmation.
+- Custom Stress inputs use valid defaults and validation.
+- Reserve ETA is binding in the engine; an intervention arriving after buffer exhaustion is not recommended.
+- State reset clears stale notices and stale proof values.
 
-## Engine audit
-
-The intervention engine now respects `Reserve ETA` rather than treating every AVAILABLE route as immediately executable.
-
-Golden stress scenario:
+## Golden deterministic check
 
 - Executable liquidity: 1.50M LQUSD
 - Stress outflow: 150k/min
 - Buffer horizon: 10:00
 - Next committed liquidity: 17:00
 - Survival Gap: -07:00
-- Solana reserve ETA: 5 sec
 - Recommended intervention: Solana Reserve
 - Projected post-intervention Survival Gap: +14:00
 
-Edge checks:
+## ETA edge cases
 
-- Reserve ETA 599 sec: intervention still reaches the buffer before exhaustion.
-- Reserve ETA 601 sec: intervention is too late by 1 sec and is not recommended.
-- Reserve ETA 900 sec: intervention is too late by 5 min and is not recommended.
-- Insufficient AVAILABLE routes are no longer exposed as recommendations.
+- Reserve ETA 5 sec → sufficient
+- Reserve ETA 599 sec → sufficient
+- Reserve ETA 601 sec → insufficient
+- Reserve ETA 900 sec → insufficient
 
-## Devnet proof audit
+## Live-network limitation
 
-- Faucet confirmation is polled before a funding success is shown.
-- Balance update is verified after the airdrop.
-- Transaction confirmation must succeed before the synthetic model is updated.
-- Transaction metadata retries `getTransaction()` after confirmation.
-- The displayed slot comes from the actual transaction/status result, not the RPC query-context slot.
-- Real test-SOL execution proof remains explicitly separated from synthetic LQUSD scenario notional.
+The self-contained Devnet path is implemented, but a final public proof is not considered complete until a real transaction is successfully confirmed and captured with its signature / slot / Explorer URL.
 
-## Important limitations
+Public Devnet airdrops may be rate-limited. A rate-limit or RPC failure must be shown as an error, never converted into a fake success state.
 
-- The final on-chain gate still requires a real development Phantom wallet signature in the user's browser. No mock transaction should be represented as live Devnet evidence.
-- The public Devnet proof measures the test-SOL execution path; it does not by itself validate the synthetic LQUSD notional or every off-chain approval/settlement assumption.
-- The production hosting connector is not currently exposing a deployable Vercel project/team context, so a permanent production URL remains pending.
+## Hosting limitation
+
+A permanent production URL remains pending because the connected Vercel account context is not currently exposed through the deployment connector.
