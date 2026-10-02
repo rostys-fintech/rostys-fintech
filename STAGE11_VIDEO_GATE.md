@@ -12,9 +12,10 @@
 - [x] Exact click path locked
 - [x] Solana role explained
 - [x] Synthetic vs real proof distinction explicit
-- [ ] Real Devnet transaction captured
-- [ ] Real signature and Explorer shown
+- [x] Signed-only fallback is clearly separated from live confirmation
+- [ ] Explorer-confirmed Solana test-cluster transaction captured
+- [ ] Real signature / slot / Explorer shown
 - [ ] Final recording under 3:00
 
 ## Final rule
-No mocked transaction may appear in the final submission as real execution evidence.
+No mocked or merely signed-but-unbroadcast transaction may appear in the final submission as real on-chain execution evidence.
