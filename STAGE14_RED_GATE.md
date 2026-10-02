@@ -4,47 +4,43 @@ Date: 2026-10-02
 
 ## Gate A — Live public demo
 
-Status: **PARTIAL / FALLBACK READY**
+Status: **PARTIAL / PUBLIC FALLBACK WORKING**
 
 - Production static build is complete.
-- `live.html` is a self-contained single-file fallback build on the public `liquidity-clock` branch.
+- `live.html` is synchronized with `index.html` on the public `liquidity-clock` branch.
+- RawGitHack is usable for browser testing.
 - Automatic Vercel deployment is not currently available through the connected tool account.
-- Do not claim a verified production URL until it is opened successfully in a normal browser.
+- Do not claim a permanent production URL until one is verified in a normal browser.
 
-Candidate fallback URLs to test manually:
+## Gate B — Explorer-confirmed Solana proof
 
-- `https://raw.githack.com/rostys-fintech/rostys-fintech/liquidity-clock/live.html`
-- `https://htmlpreview.github.io/?https://github.com/rostys-fintech/rostys-fintech/blob/liquidity-clock/live.html`
+Status: **RESILIENT FLOW IMPLEMENTED / CONFIRMED CHAIN PROOF STILL PENDING**
 
-## Gate B — Real Solana Devnet proof
+Current one-click sequence:
 
-Status: **CODE READY / USER SIGNATURE REQUIRED**
-
-Required manual sequence using a development-only Phantom wallet:
-
-1. Open the live/local Liquidity Clock build in Chrome with Phantom installed.
+1. Open Liquidity Clock.
 2. Select **Timing Stress**.
-3. Click **Connect Phantom** and connect a development-only wallet on Solana Devnet.
-4. If needed, click **Fund Devnet**.
-5. Confirm the wallet has enough Devnet SOL for the proof transfer and fees.
-6. Click **Execute Liquidity**.
-7. Approve the real 0.00315 Devnet SOL transaction in Phantom.
-8. Wait for **CONFIRMED**.
-9. Verify that the UI surfaces the real signature, slot, execution time and Explorer link.
-10. Open the Explorer link and confirm it resolves to the same Devnet transaction.
-11. Confirm the synthetic model changes only after confirmation: `1.50M → 4.65M`, `10:00 → 31:00`, `−07:00 → +14:00`.
+3. Click **Run Live Solana Proof**.
+4. The app tries Solana Devnet first and Testnet second.
+5. If public test funding is available, it signs, submits and waits for confirmation.
+6. A live success must show `CONFIRMED`, signature, slot and Explorer.
+7. Only then may the synthetic state change `1.50M → 4.65M`, `10:00 → 31:00`, `−07:00 → +14:00` and mark Solana Reserve `Deployed`.
 
-Hard rule: never substitute a mock signature or simulated confirmation for this gate.
+If public test funding is unavailable, the app returns `SIGNED / NOT BROADCAST` instead. That mode is not on-chain evidence and must leave the treasury state unchanged.
+
+Hard rule: never substitute a mock, simulated, or merely signed-but-unbroadcast transaction for the final confirmed proof.
 
 ## Gate C — Real user validation
 
-Status: **DRAFTS READY / NOTHING SENT**
+Status: **PENDING USER-AUTHORIZED OUTREACH / NO VALIDATION CLAIMS**
 
-Four Gmail drafts are prepared across banking, financial-stability, academic-finance and external-mentor perspectives. Current verified validation counts remain zero until messages are actually sent and replies are received.
+Do not send any email and do not create new outreach drafts unless the user explicitly asks for a draft. Sending any email requires a separate explicit user instruction.
+
+Validation counts remain zero until real outreach is actually sent with user authorization and replies / real prototype views occur.
 
 ## What becomes submission-ready after these gates
 
-Once a public URL is verified, one real Devnet transaction is completed, and real validation responses exist:
+Once a permanent public URL is verified, one real Solana test-cluster transaction is Explorer-confirmed, and real validation evidence exists:
 
 - update `VALIDATION.md` with factual counts/themes;
 - insert the verified URL into `FORM_COPY.md` and `SUBMISSION_PACKAGE.md`;
