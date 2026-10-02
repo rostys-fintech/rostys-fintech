@@ -1,48 +1,62 @@
 # Liquidity Clock — Final Technical Demo Script
 
-**Target:** ~1:50–2:15. Hard cap: under 3:00.
+**Target:** ~1:35–1:55. Hard cap: under 3:00.
 
-## 0:00–0:15 — Timing Stress
+## 0:00–0:12 — Timing Stress
 
-> This is Liquidity Clock. The current executable buffer lasts ten minutes. The next committed liquidity arrives in seventeen, so the Survival Gap is minus seven minutes.
+> This is Liquidity Clock. In this stress scenario the current executable buffer lasts ten minutes, while the next committed liquidity arrives in seventeen. That creates a minus-seven-minute Survival Gap.
 
-## 0:15–0:35 — Routes
+Show the three headline clocks: `10:00 / -07:00 / 17:00`.
 
-Show Operating Wallet, Solana Reserve, scheduled CEX reserve and slower standby routes.
+## 0:12–0:28 — Route logic
 
-> The engine separates what is executable now, what is available, and what is scheduled. It walks the timing sequence and finds the first binding gap.
+Scroll to the route table.
 
-## 0:35–0:50 — Recommendation
+> The engine separates liquidity that is executable now, available for intervention, scheduled, and standby. It then checks each route against the timing constraint.
 
-> The Solana reserve is the fastest sufficient route in this scenario. The projected effect is minus seven minutes to plus fourteen.
+Pause on the highlighted Solana Reserve.
 
-## 0:50–1:10 — One-click execution
+## 0:28–0:40 — Recommendation
 
-Click **Run Live Solana Proof**.
+> The fastest sufficient intervention here is the Solana Reserve. The projected result is a move from minus seven minutes to plus fourteen.
 
-> No browser wallet or mainnet funds are required. The app tries Solana Devnet first and Testnet second, then signs locally and submits when public test funding is available.
+Show the Recommended Action card.
 
-Show:
-`Prepare → Sign → Submit → Confirm → Complete`.
+## 0:40–1:05 — One-click rescue
 
-## 1:10–1:35 — Proof
+Click **Run Liquidity Rescue** once.
 
-For the final submission video, show `CONFIRMED`, execution time, slot, signature and Explorer.
+> The user does not need to manage a wallet or understand test-cluster funding. The product runs the rescue workflow, applies the synthetic intervention and recalculates the treasury state.
 
-> This is a real Solana test-cluster transaction. The test-SOL transfer verifies the execution path and timing. The LQUSD treasury amounts remain clearly synthetic.
+Keep the cursor still while the loading animation runs.
 
-If the site is in `SIGNED / NOT BROADCAST` mode during rehearsal, do not present that as the final live proof. The UI should remain at the original treasury state and the button should offer **Retry Live Confirmation**.
+Show the animated progress and wait for the result.
 
-## 1:35–1:55 — Confirmed Before / After
+## 1:05–1:22 — Before / After
 
-> Only after confirmation does the synthetic executable balance move from 1.5 to 4.65 million. Buffer runway moves from ten to thirty-one minutes and the Survival Gap changes from minus seven to plus fourteen.
+> The simulated executable liquidity moves from 1.50 to 4.65 million, the buffer horizon from ten to thirty-one minutes, and the Survival Gap from minus seven to plus fourteen.
 
-## 1:55–2:05 — Custom Stress
+Pause on the final Before / After cards.
 
-Optionally switch to Custom Stress and change Reserve ETA.
+## 1:22–1:38 — Solana verification layer
 
-> The recommendation is not hard-coded. If the reserve arrives after the buffer is exhausted, the engine refuses to recommend it.
+Scroll to Execution & Verification.
 
-## Final rule
+> Solana verification runs separately in the background. When a public test-cluster transaction confirms, the product can surface its signature, slot and Explorer proof. If public test funding is unavailable, the app labels verification as pending rather than claiming a confirmation that did not happen.
 
-The final video must show a real Explorer-confirmed Solana test-cluster transaction. A signed-only fallback is useful for product resilience but does **not** count as on-chain execution proof.
+Do not describe a pending or signed-only state as on-chain confirmation.
+
+## 1:38–1:52 — Custom Stress proof of generalization
+
+Switch to **Custom Stress** and change one timing input, preferably Reserve ETA.
+
+> The recommendation is not hard-coded. If the reserve arrives after the current buffer is exhausted, the engine rejects that route.
+
+## Final recording rule
+
+The technical demo must clearly distinguish:
+
+- **Simulated treasury outcome** — always synthetic public-safe scenario logic;
+- **Live Solana verification** — only confirmed if the chain actually confirms it.
+
+A real Explorer-confirmed transaction is a strong bonus, but the demo must never fake one and must not stall if public test funding is temporarily unavailable.
