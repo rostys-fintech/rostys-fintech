@@ -14,10 +14,14 @@ Show `1.50M LQUSD`, `150k/min`, `10:00`, `17:00` and Survival Gap `−07:00`.
 
 ### 0:35–0:50 — Recommendation
 
-> The fastest sufficient intervention is the Solana reserve. Smaller or slower routes do not close the first binding timing gap.
+> The fastest sufficient intervention is the Solana reserve. Slower routes do not close the first binding timing gap.
 
-### 0:50–1:15 — Real Devnet proof
-Connect a **development-only Phantom wallet**, then click **Execute Liquidity**. Show the wallet signature request, submitted transaction, confirmed status, signature, slot and Explorer link.
+### 0:50–1:15 — Solana proof
+Click **Run Live Solana Proof**.
+
+> The app uses a test-only signer, tries Devnet first and Testnet second, and submits a real test-SOL transaction when public test funding is available. No user wallet or mainnet funds are required.
+
+For the final demo, show confirmed status, signature, slot and Explorer link.
 
 > The chain transaction is the execution proof. The 3.15M LQUSD amount is synthetic scenario notional and is applied only after confirmation.
 
@@ -26,6 +30,6 @@ Show executable liquidity `4.65M`, runway `31:00`, Survival Gap `+14:00`.
 
 > Liquidity Clock turns liquidity from a static balance into a timing decision: will usable liquidity arrive before the buffer is gone?
 
-## Failure demo
+## Signed-only fallback
 
-If the wallet rejects or the Devnet transaction fails, the scenario balance must **not** change.
+If the site shows `SIGNED / NOT BROADCAST`, the treasury state must **not** change. No slot or Explorer link is shown. Use **Retry Live Confirmation** later; do not present signed-only mode as on-chain execution evidence.
