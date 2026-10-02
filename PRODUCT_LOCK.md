@@ -13,4 +13,4 @@ Liquidity is not only an amount. Under stress, it is a race between outflow velo
 Liquidity Clock is a real-time stress engine that compares how fast liquidity is being consumed with how fast reserve sources can actually become executable, then identifies the timing gap and the fastest viable intervention.
 
 ## Hard exclusions
-No portfolio management, trading terminal, custody, insolvency prediction, universal liquidity ratio, bank-run prediction, unpublished R3/JFS reproduction, or generic chatbot.
+No portfolio management, trading terminal, custody, insolvency prediction, universal liquidity ratio, bank-run prediction, reproduction of private/submission-sensitive academic materials, or generic chatbot.
