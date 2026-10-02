@@ -54,7 +54,7 @@ Germany. Ukrainian founder currently based in Germany.
 Solana Devnet, Phantom wallet, browser-based Solana Web3 integration, deterministic TypeScript/JavaScript liquidity engine, static responsive web UI.
 
 ## Why Solana
-Solana is used as an executable liquidity rail rather than as decorative storage. The MVP connects to Phantom, submits a real Devnet transaction, waits for network confirmation, captures the signature / slot / execution timing, and only then recalculates the treasury's synthetic executable-liquidity state. The product therefore links a decision recommendation to verifiable on-chain execution proof.
+Solana is used as a verifiable execution rail rather than as decorative storage. The MVP connects to Phantom, submits a real Devnet transaction, waits for network confirmation, captures the signature / slot / execution timing, and only then recalculates the treasury's synthetic executable-liquidity state. In the current public MVP, the on-chain transfer verifies execution and settlement timing while the institutional treasury amount remains synthetic public-safe notional.
 
 ## Technical architecture
 1. Synthetic treasury scenario defines operating liquidity, stress outflow and route timing.
@@ -83,6 +83,15 @@ After:
 - Buffer horizon: 31:00
 - Next committed liquidity: 17:00
 - Survival Gap: +14:00
+
+## Generalization beyond the golden demo
+The MVP also includes a **Custom Stress** mode. A reviewer can change executable liquidity, stress outflow, next committed amount / arrival time, and available Solana reserve assumptions. The deterministic engine recomputes the buffer horizon, Survival Gap and intervention recommendation from those new inputs. This is intended to demonstrate that the core logic is not hard-coded to the headline -7 to +14 minute example.
+
+## Why this can become a company rather than a feature
+The initial wedge is a stress-time diagnostic. The larger product is an executable-liquidity control layer across heterogeneous treasury rails. Over time, connectors ingest balances and route states; execution history calibrates time-to-usability; the engine continuously detects binding timing gaps; policy workflows identify permissible actions; transactions are initiated across supported rails; and confirmed settlement feeds back into the treasury state. Liquidity Clock is the entry interface into that broader **Executable Liquidity Infrastructure**.
+
+## Current Solana scope — precise claim
+The public MVP uses a **real Solana Devnet transaction as execution and settlement-timing proof for the selected route**. Treasury amounts such as 3.15M LQUSD remain synthetic public-safe scenario notional. The current demo therefore verifies the execution workflow and timing, not a real 3.15M-value asset movement. A production version would bind the modeled route directly to a real tokenized treasury asset or institutional rail.
 
 ## GitHub
 https://github.com/rostys-fintech/rostys-fintech/tree/liquidity-clock
