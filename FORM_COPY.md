@@ -19,10 +19,10 @@ Treasury and liquidity-risk teams at digital-asset institutions such as exchange
 Digital-asset treasuries increasingly manage liquidity across several rails with different execution and settlement times. A single balance view does not capture whether those resources are executable by the required horizon. Liquidity Clock adds that timing layer.
 
 ## Why blockchain / why Solana?
-Solana is a verifiable execution rail in the product, not a decorative data layer. The MVP uses a development Phantom wallet to submit and confirm a real Solana Devnet transaction. The app surfaces the resulting signature, slot and execution timing, then recalculates the synthetic treasury state only after confirmation. The on-chain transfer verifies route execution and settlement timing; institutional treasury amounts in the public demo remain synthetic.
+Solana is a verifiable execution rail in the product, not a decorative data layer. The MVP can run a real Devnet proof without requiring a user wallet: it creates a temporary in-memory Devnet keypair, obtains test SOL, signs locally, submits the transaction, waits for confirmation and surfaces the resulting signature, slot and execution timing. The synthetic treasury state changes only after confirmation.
 
 ## What did you build?
-A public-safe single-page treasury stress engine with synthetic preset scenarios plus a Custom Stress mode, deterministic Survival Gap calculations, chronological liquidity-route logic, intervention ranking, responsive animated UI, Phantom connection, Solana Devnet transaction execution, settlement proof and post-confirmation Before-to-After recalculation.
+A public-safe single-page treasury stress engine with preset scenarios plus a Custom Stress mode, deterministic Survival Gap calculations, chronological route logic, intervention sufficiency checks, responsive animated UI and a self-contained Solana Devnet execution proof with real Explorer-verifiable output.
 
 ## What is unique?
 The product is centered on time-to-executable-liquidity rather than total balances. Its core metric, the Survival Gap, directly compares the treasury's remaining executable-buffer horizon with the arrival time of the next committed liquidity source.
