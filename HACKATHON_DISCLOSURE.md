@@ -14,11 +14,13 @@ Pre-existing conceptual insight used here:
 - the **Survival Gap** decision metric for a synthetic digital-asset treasury;
 - the deterministic route-walking stress engine;
 - synthetic Safe / Timing Stress / On-chain Rescue scenarios;
+- Custom Stress mode with binding reserve ETA;
 - intervention ranking and first-binding-gap logic;
 - the single-page institutional UI;
-- the Phantom + Solana Devnet execution-proof adapter;
+- the one-click Solana Devnet → Testnet execution-proof adapter;
+- explicit `LIVE CONFIRMED` vs `SIGNED / NOT BROADCAST` proof states;
 - post-confirmation recalculation of executable liquidity;
-- transaction-proof UI with signature, slot, timing and Explorer link;
+- transaction-proof UI with signature, slot, timing and Explorer link for confirmed proofs;
 - public documentation and demo materials.
 
 ## Public-safety boundary
@@ -29,6 +31,6 @@ All institutions, balances, outflow rates, liquidity routes and timing assumptio
 
 ## Chain-integrity statement
 
-The public demo uses a real Solana Devnet transaction as **execution/settlement proof**. The synthetic `LQUSD` notional is not presented as a real token, stablecoin or market-valued asset.
+The public demo can use a real Solana test-cluster transaction as **execution / settlement-path proof**. The synthetic `LQUSD` notional is not presented as a real token, stablecoin or market-valued asset.
 
-The liquidity engine applies the synthetic intervention only after the Devnet proof transaction confirms.
+The liquidity engine applies the synthetic intervention only after a transaction is actually confirmed. A `SIGNED / NOT BROADCAST` fallback is not treated as on-chain proof and leaves the treasury state unchanged.
