@@ -18,51 +18,39 @@ A negative gap means the treasury exhausts its executable buffer before the next
 - Next committed liquidity: **17 min**
 - Initial Survival Gap: **−7 min**
 - Available intervention: **3.15M LQUSD Solana reserve (synthetic notional)**
-- Projected after confirmed execution proof: operating liquidity **4.65M**, buffer horizon **31 min**, Survival Gap **+14 min**
+- Projected after a successful intervention: operating liquidity **4.65M**, buffer horizon **31 min**, Survival Gap **+14 min**
 
-## One-click real Solana Devnet proof
+## One-click Solana proof
 
-The public MVP does not require Phantom or a user wallet.
+The public MVP does not require Phantom, a user wallet or mainnet funds.
 
-When **Run Live Devnet Proof** is pressed, the browser:
+When **Run Live Solana Proof** is pressed, the browser:
 
-1. loads or creates a **Devnet-only demo keypair** stored in this browser;
-2. checks its current Devnet balance;
-3. requests test SOL automatically if the public Devnet faucet is available;
-4. signs a real **0.0000315 Devnet SOL** transfer locally;
-5. submits it to `https://api.devnet.solana.com`;
-6. waits for network confirmation;
-7. surfaces the real transaction signature, slot, timing and Explorer link;
-8. only then applies the synthetic intervention to the Liquidity Clock scenario.
+1. loads or creates a dedicated test-only signer stored in this browser;
+2. checks Solana Devnet first;
+3. attempts to obtain test SOL and run a real test-SOL transaction;
+4. automatically falls back to Solana Testnet if Devnet test funding is unavailable;
+5. signs locally, submits, waits for confirmation, and surfaces the real signature / slot / Explorer link when the transaction confirms;
+6. updates the synthetic treasury state **only after real on-chain confirmation**.
 
-The demo key exists only for Devnet testing and has no mainnet purpose. Keeping the same demo address in browser storage is intentional: if the public faucet is rate-limited, a reviewer can fund that Devnet-only address once and reuse it across reloads and repeated demos.
+Public Solana faucets can be rate-limited. To keep the demo truthful and resilient, Liquidity Clock has two explicit proof modes:
 
-The **3.15M LQUSD** amount is synthetic stress-test notional. It is deliberately not represented as a real-valued token. The Devnet SOL transfer is execution/settlement proof for the demo route; it is not presented as a real 3.15M-value liquidity movement.
+- **LIVE CONFIRMED** — a real test-SOL transaction was broadcast and confirmed. Only this mode changes the treasury state from `−07:00` to `+14:00` and marks the Solana route as deployed.
+- **SIGNED / NOT BROADCAST** — a fresh transaction was built against a current Solana test-cluster blockhash and signed locally, but public test funding was unavailable. No slot or Explorer link is shown, no on-chain confirmation is claimed, and the treasury state remains unchanged.
 
-**Status:** the proof path is implemented. The final public proof is complete only after a real Devnet transaction is successfully confirmed and recorded.
-
-## Faucet fallback
-
-Solana's public Devnet airdrop is rate-limited. If automatic funding returns a 429, Liquidity Clock keeps the same demo wallet and shows:
-
-- the full demo address;
-- **Copy demo address**;
-- the official Solana faucet;
-- the QuickNode Devnet faucet.
-
-After that address receives test SOL, press **Run Live Devnet Proof** again. No Phantom is required.
+The **3.15M LQUSD** amount is synthetic stress-test notional. It is deliberately not represented as a real-valued token. The test-SOL transaction is execution / settlement-path proof; it is not presented as a real 3.15M-value liquidity movement.
 
 ## Why no browser wallet is required
 
-This is a public testnet demonstration, not a custody flow. Requiring a reviewer to install/connect Phantom adds friction without improving the core proof. The MVP therefore uses a dedicated Devnet-only browser keypair. A production system would use an institutional signer / custody policy layer rather than a raw browser keypair.
+This is a public test-cluster demonstration, not a custody flow. Requiring a reviewer to install or connect Phantom adds friction without improving the core product test. The MVP therefore uses a dedicated test-only browser signer. A production system would use an institutional signer / custody or policy layer rather than a raw browser keypair.
 
 ## Run locally
 
-The deterministic app shell has no package-manager dependencies. Real chain execution loads the pinned Solana Web3 browser bundle from jsDelivr, so internet access is required for Devnet execution.
+The deterministic app shell has no package-manager dependencies. Solana execution loads the pinned Web3 browser bundle from jsDelivr, so internet access is required for chain interaction.
 
 On macOS, use `RUN_ON_MAC.command`.
 
-Manual fallback:
+Manual local server:
 
 ```bash
 python3 -m http.server 8080
@@ -79,8 +67,8 @@ Reviewers can change executable liquidity, stress outflow, next committed arriva
 ## Architecture
 
 - `engine.js` — deterministic survival-gap and intervention engine
-- `app.js` — scenarios, state, rendering and one-click proof flow
-- `solana-adapter.js` — persistent Devnet-only browser demo wallet + real execution proof
+- `app.js` — scenarios, state, rendering and proof-mode separation
+- `solana-adapter.js` — Devnet → Testnet live proof path plus signed-only fallback
 - `index.html` / `styles.css` / `custom.css` — single-page institutional UI
 
 ## Public-safety boundary
@@ -91,11 +79,10 @@ All institutions, balances, rates, routes and timings in the public MVP are synt
 
 1. Open **Timing Stress**.
 2. Observe the initial `−7 min` Survival Gap.
-3. Click **Run Live Devnet Proof**.
-4. If automatic faucet funding is rate-limited, fund the displayed persistent Devnet address once and retry.
-5. Watch `Prepare → Sign → Submit → Confirm → Complete`.
-6. Verify the real signature / slot / Explorer link.
-7. Observe the synthetic scenario move to `+14 min` only after confirmation.
+3. Click **Run Live Solana Proof**.
+4. The app tries Devnet, then Testnet automatically.
+5. If a transaction confirms, show `CONFIRMED`, execution time, slot, signature and Explorer, then observe `−07:00 → +14:00`.
+6. If public funding is unavailable, the app shows `SIGNED / NOT BROADCAST`; the state stays at `−07:00` and the reviewer can retry live confirmation later.
 
 ## Validation
 
