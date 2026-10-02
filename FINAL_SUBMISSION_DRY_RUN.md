@@ -21,8 +21,9 @@ Date: 2026-10-02
 - Public-safe product build
 - Custom Stress mode
 - Deterministic engine
-- Solana Devnet adapter code
-- Wallet / faucet / execution UI
+- Solana Devnet → Testnet proof adapter
+- Explicit `LIVE CONFIRMED` vs `SIGNED / NOT BROADCAST` separation
+- No Phantom / mainnet requirement
 - Favicon / app metadata
 - Pitch script
 - Technical demo script
@@ -32,12 +33,26 @@ Date: 2026-10-02
 
 ### PENDING REAL EVIDENCE
 
-1. Real Phantom-signed Devnet transaction
+1. Explorer-confirmed Solana test-cluster transaction
 2. Confirmed signature / slot / Explorer URL
 3. Validation replies / tester feedback
 4. Permanent live product URL
 5. Final pitch video URL
 6. Final technical demo video URL
+
+## Important integrity gate
+
+A `SIGNED / NOT BROADCAST` fallback does **not** count as on-chain proof.
+
+In signed-only mode:
+
+- the Solana route remains Available;
+- the treasury state remains `1.50M / 10:00 / -07:00`;
+- no slot is shown;
+- no Explorer link is shown;
+- the UI offers `Retry Live Confirmation`.
+
+Only an Explorer-confirmed transaction may change the state to `4.65M / 31:00 / +14:00` and mark the route as Deployed.
 
 ## Form copy source
 
@@ -84,14 +99,13 @@ Must visibly show:
 - initial -07:00 state;
 - route logic;
 - recommendation;
-- Devnet RPC status;
-- Phantom;
-- real transaction approval;
+- Solana test-cluster status;
+- one-click live proof;
 - Confirmed status;
 - slot;
 - signature;
 - Explorer;
-- -07:00 to +14:00 recalculation.
+- -07:00 to +14:00 recalculation after confirmation.
 
 ## Validation rule
 
@@ -116,7 +130,8 @@ Before inserting it into the form, verify:
 - mobile layout works;
 - scenario buttons work;
 - Custom Stress recalculates;
-- Phantom detection works in supported browser;
+- signed-only mode does not mutate treasury state;
+- live-confirmed mode does mutate treasury state;
 - no console-breaking errors;
 - favicon appears;
 - no private material is exposed.
