@@ -5,45 +5,50 @@
 - [x] User locked
 - [x] Problem locked
 - [x] Core metric locked
-- [x] Three synthetic scenarios
+- [x] Synthetic scenarios
 - [x] Deterministic engine
 - [x] Animated responsive UI
 - [x] Public-safety boundary
+- [x] Custom Stress with binding Reserve ETA
 
 ## Solana
-- [x] Phantom integration code
-- [x] Devnet transaction code
-- [x] Confirmation / signature / slot handling
-- [x] Explorer-link handling
-- [ ] REAL DEVNET TRANSACTION SIGNED AND VERIFIED
-- [ ] Real signature captured for final technical demo
+- [x] No-Phantom one-click proof architecture
+- [x] Devnet → Testnet fallback
+- [x] Transaction signing / submission / confirmation handling
+- [x] Signature / slot / Explorer handling
+- [x] `SIGNED / NOT BROADCAST` fallback separated from on-chain success
+- [x] Signed-only mode leaves treasury state unchanged
+- [ ] EXPLORER-CONFIRMED SOLANA TEST-CLUSTER TRANSACTION CAPTURED
+- [ ] Real signature / slot / Explorer stored in proof record
 
 ## Public build
 - [x] Public GitHub branch
+- [x] `index.html` and `live.html` synchronized
 - [x] README
 - [x] Architecture
 - [x] Hackathon disclosure
 - [x] Demo docs
 - [x] Favicon / manifest
 - [x] Production metadata / headers
-- [ ] LIVE PUBLIC URL
-- [ ] Production browser QA on live URL
+- [x] Popover stacking/contrast fix
+- [ ] PERMANENT LIVE PUBLIC URL
+- [ ] Production browser QA on permanent URL
 
 ## Validation
-- [x] Discovery questions prepared
-- [x] Outreach text prepared
-- [x] Validation log template prepared
-- [ ] Outreach sent
-- [ ] >=5 relevant replies target
-- [ ] >=2 prototype testers target
+- [x] Validation rules documented
+- [ ] User-authorized outreach actually sent
+- [ ] Real replies / prototype views logged
 - [ ] Verified recurring feedback summarized
+
+No email may be sent without explicit user instruction. Do not create new outreach drafts unless the user explicitly asks for a draft.
 
 ## Submission media
 - [x] Pitch script
 - [x] Technical demo script
 - [x] Shot list
-- [ ] Pitch video recorded (2-3 min)
-- [ ] Technical demo recorded (<=3 min)
+- [x] Recording plan
+- [ ] Pitch video recorded (2–3 min)
+- [ ] Technical demo recorded (≤3 min)
 - [ ] Both videos publicly accessible
 
 ## Form
@@ -57,28 +62,28 @@
 - [x] Business model
 - [x] Distribution plan
 - [x] Pre-existing-work disclosure
-- [ ] Insert verified validation numbers
-- [ ] Insert live website URL
+- [ ] Insert verified validation evidence
+- [ ] Insert permanent website URL
 - [ ] Insert pitch-video URL
 - [ ] Insert demo-video URL
 - [ ] Attach final graphic / logo
 
 ## Hostile-judge questions
 Before Submit, answer clearly:
-- [ ] Why is this not just another treasury dashboard?
-- [ ] Why does this need blockchain?
-- [ ] Why Solana specifically?
-- [ ] What exactly is real vs synthetic in the demo?
-- [ ] Who pays?
-- [ ] How do you get the first 10 users?
-- [ ] What did you build during the hackathon?
-- [ ] What did you have before the hackathon?
-- [ ] What is the venture-scale expansion path?
+- [x] Why is this not just another treasury dashboard?
+- [x] Why does this need blockchain?
+- [x] Why Solana specifically?
+- [x] What exactly is real vs synthetic in the demo?
+- [x] Who pays?
+- [x] How do you get the first users?
+- [x] What did you build during the hackathon?
+- [x] What did you have before the hackathon?
+- [x] What is the venture-scale expansion path?
 - [ ] What evidence of demand do you actually have?
 
 ## HARD NO-SUBMIT CONDITIONS
 Do not submit while any of these are true:
-- final demo implies a fake transaction is real;
+- final demo implies a signed-only or mock transaction is real on-chain execution;
 - website URL is broken;
 - video exceeds the time limit;
 - validation claims are invented or inflated;
