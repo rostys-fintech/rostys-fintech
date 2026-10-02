@@ -46,9 +46,11 @@ The engine then tests available routes and identifies whether a faster intervent
 
 For the demo, Solana is a real execution rail.
 
-One click creates a temporary Devnet wallet in browser memory, funds it with test SOL, signs a real transaction locally, submits it to Devnet and waits for confirmation.
+One click uses a dedicated test-only signer, tries Devnet first and Testnet second, signs locally, and submits a real test-SOL transaction when public test funding is available.
 
-The app shows the real signature, slot and execution time, and only after confirmation does the synthetic liquidity state change.
+The app shows the real signature, slot and Explorer link, and only after confirmation does the synthetic liquidity state change.
+
+If public test funding is rate-limited, the app can still produce a signed-only proof, but it clearly labels it as not broadcast and does not pretend the treasury state changed.
 
 No user wallet or mainnet funds are required.
 
