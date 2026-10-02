@@ -14,14 +14,16 @@
 
 1. Timing Stress hero — 10:00 / 17:00 / −07:00
 2. Route table — highlight Solana Reserve
-3. Recommendation card — −07 → +14
-4. Connect dedicated Phantom development wallet
-5. Execute Liquidity
-6. Capture Prepare → Sign → Submit → Confirm → Complete
-7. Pause on real signature / slot / execution time
-8. Open real Solana Explorer transaction
-9. Return to app — +14:00 state
-10. Before → After close
+3. Recommendation card — −07 → +14 projected
+4. Click **Run Live Solana Proof**
+5. Capture Prepare → Sign → Submit → Confirm → Complete
+6. Pause on `CONFIRMED`, real signature / slot / execution time
+7. Open the real Solana Explorer transaction
+8. Return to app — +14:00 confirmed state
+9. Before → Confirmed After close
+10. Optional Custom Stress edge case
+
+If the app returns `SIGNED / NOT BROADCAST`, do not use that take as the final chain-proof shot. The state should remain at −07:00 and the button should show **Retry Live Confirmation**.
 
 ## Recording quality gate
 
