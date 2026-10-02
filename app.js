@@ -1,43 +1,200 @@
 const E=window.LiquidityEngine;
+
 const scenarios={
-  safe:{id:'safe',name:'NOVA Exchange — Safe Treasury',operatingLiquidity:3_000_000,outflowRatePerMinute:100_000,bottleneck:'None',routes:[{id:'sol',name:'Solana Reserve',amount:1_000_000,etaSeconds:4,state:'AVAILABLE',provenance:'SCENARIO'},{id:'cex',name:'CEX Reserve Settlement',amount:2_000_000,etaSeconds:12*60,state:'SCHEDULED',provenance:'CONFIGURED'},{id:'token',name:'Tokenized Reserve',amount:4_000_000,etaSeconds:30*60,state:'STANDBY',provenance:'CONFIGURED'},{id:'bank',name:'Bank Facility',amount:5_000_000,etaSeconds:45*60,state:'STANDBY',provenance:'CONFIGURED'}]},
-  stress:{id:'stress',name:'NOVA Exchange — Timing Stress',operatingLiquidity:1_500_000,outflowRatePerMinute:150_000,bottleneck:'Settlement latency',routes:[{id:'sol',name:'Solana Reserve',amount:3_150_000,etaSeconds:4,state:'AVAILABLE',provenance:'SCENARIO'},{id:'cex',name:'CEX Reserve Settlement',amount:2_000_000,etaSeconds:17*60,state:'SCHEDULED',provenance:'CONFIGURED'},{id:'token',name:'Tokenized Reserve',amount:4_000_000,etaSeconds:30*60,state:'STANDBY',provenance:'CONFIGURED'},{id:'bank',name:'Bank Facility',amount:5_000_000,etaSeconds:45*60,state:'STANDBY',provenance:'CONFIGURED'}]},
-  rescue:{id:'rescue',name:'NOVA Exchange — On-chain Rescue',operatingLiquidity:1_500_000,outflowRatePerMinute:150_000,bottleneck:'Settlement latency',autoRescue:true,routes:[{id:'sol',name:'Solana Reserve',amount:3_150_000,etaSeconds:4,state:'AVAILABLE',provenance:'SCENARIO'},{id:'cex',name:'CEX Reserve Settlement',amount:2_000_000,etaSeconds:17*60,state:'SCHEDULED',provenance:'CONFIGURED'},{id:'token',name:'Tokenized Reserve',amount:4_000_000,etaSeconds:30*60,state:'STANDBY',provenance:'CONFIGURED'},{id:'bank',name:'Bank Facility',amount:5_000_000,etaSeconds:45*60,state:'STANDBY',provenance:'CONFIGURED'}]}
+  safe:{id:'safe',name:'NOVA Exchange — Safe Treasury',operatingLiquidity:3_000_000,outflowRatePerMinute:100_000,bottleneck:'None',routes:[
+    {id:'sol',name:'Solana Reserve',amount:1_000_000,etaSeconds:4,state:'AVAILABLE',provenance:'SCENARIO'},
+    {id:'cex',name:'CEX Reserve',amount:2_000_000,etaSeconds:12*60,state:'SCHEDULED',provenance:'CONFIGURED'},
+    {id:'token',name:'Tokenized Reserve',amount:4_000_000,etaSeconds:30*60,state:'STANDBY',provenance:'CONFIGURED'},
+    {id:'bank',name:'Bank Facility',amount:5_000_000,etaSeconds:45*60,state:'STANDBY',provenance:'CONFIGURED'}]},
+  stress:{id:'stress',name:'NOVA Exchange — Timing Stress',operatingLiquidity:1_500_000,outflowRatePerMinute:150_000,bottleneck:'Settlement latency',routes:[
+    {id:'sol',name:'Solana Reserve',amount:3_150_000,etaSeconds:5,state:'AVAILABLE',provenance:'SCENARIO'},
+    {id:'cex',name:'CEX Reserve',amount:2_000_000,etaSeconds:17*60,state:'SCHEDULED',provenance:'CONFIGURED'},
+    {id:'token',name:'Tokenized Reserve',amount:4_000_000,etaSeconds:30*60,state:'STANDBY',provenance:'CONFIGURED'},
+    {id:'bank',name:'Bank Facility',amount:5_000_000,etaSeconds:45*60,state:'STANDBY',provenance:'CONFIGURED'}]},
+  rescue:{id:'rescue',name:'NOVA Exchange — On-chain Rescue Preview',operatingLiquidity:1_500_000,outflowRatePerMinute:150_000,bottleneck:'Settlement latency',previewRescue:true,routes:[
+    {id:'sol',name:'Solana Reserve',amount:3_150_000,etaSeconds:5,state:'AVAILABLE',provenance:'SCENARIO'},
+    {id:'cex',name:'CEX Reserve',amount:2_000_000,etaSeconds:17*60,state:'SCHEDULED',provenance:'CONFIGURED'},
+    {id:'token',name:'Tokenized Reserve',amount:4_000_000,etaSeconds:30*60,state:'STANDBY',provenance:'CONFIGURED'},
+    {id:'bank',name:'Bank Facility',amount:5_000_000,etaSeconds:45*60,state:'STANDBY',provenance:'CONFIGURED'}]}
 };
-let currentKey='stress';let executedAmount=0;let executedRouteId=null;let executing=false;
+
+let currentKey='stress';
+let executedAmount=0;
+let executedRouteId=null;
+let executing=false;
+let lastValues={buffer:null,next:null,gap:null};
 const $=id=>document.getElementById(id);
-function provenancePill(p){return `<span class="pill ${p==='ON_CHAIN'?'onchain':p==='CONFIGURED'?'configured':'scenario'}">${p.replace('_',' ')}</span>`}
-function stateAssessment(route,scenario){
-  if(route.state==='EXECUTABLE') return ['Executable now','s-good'];
-  if(route.state==='AVAILABLE'){const post=E.firstBindingGap(scenario,scenario.operatingLiquidity+executedAmount+route.amount);return [post.gapSeconds>=0?'Sufficient if deployed':'Partial only',post.gapSeconds>=0?'s-good':'s-warn'];}
-  if(route.state==='SCHEDULED') return ['Committed route','s-warn'];
-  if(route.state==='DEPLOYED') return ['Moved to operating wallet','s-good'];
-  return ['Standby',''];
+
+function fmtAmount(amount){return `${E.fmtM(amount)} LQUSD`}
+function shortAddr(a){return !a?'Phantom not connected':a.length>18?`${a.slice(0,7)}…${a.slice(-7)}`:a}
+function cssStatus(state){return `status-${state.toLowerCase()}`}
+function iconFor(id){return id==='sol'?'S':id==='cex'?'↗':id==='token'?'◫':id==='bank'?'▥':'●'}
+
+function animateText(el,from,to,formatter,duration=550){
+  if(from===null||!Number.isFinite(from)||!Number.isFinite(to)){el.textContent=formatter(to);return}
+  const start=performance.now();
+  function step(t){const p=Math.min(1,(t-start)/duration);const eased=1-Math.pow(1-p,3);el.textContent=formatter(from+(to-from)*eased);if(p<1)requestAnimationFrame(step)}
+  requestAnimationFrame(step);
 }
-function render(){
+function bump(el){el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');setTimeout(()=>el.classList.remove('bump'),380)}
+function dialAngle(seconds,maxSeconds=30*60){return Math.max(48,Math.min(278,(seconds/maxSeconds)*278))}
+function updateDial(id,seconds,color){$(id).style.setProperty('--angle',`${dialAngle(seconds)}deg`);if(color)$(id).style.setProperty('--dial-color',color)}
+
+function buildLiveScenario(){
   const s=structuredClone(scenarios[currentKey]);
   const liveOperating=s.operatingLiquidity+executedAmount;
   const engineRoutes=executedRouteId?s.routes.filter(r=>r.id!==executedRouteId):s.routes;
-  const engineScenario={...s,operatingLiquidity:liveOperating,routes:engineRoutes};
-  const analysis=E.analyze(engineScenario);const base=analysis.base;const next=base.route;
-  $('scenarioName').textContent=s.name;$('bufferClock').textContent=E.fmtSeconds(analysis.bufferSeconds);$('nextClock').textContent=next?E.fmtSeconds(next.etaSeconds):'—';$('nextRouteName').textContent=next?next.name:'No committed route';
-  const gap=base.gapSeconds;$('survivalGap').textContent=E.fmtSeconds(gap);$('survivalGap').className='gap '+(gap>=0?'positive':'negative');$('gapCard').className='gap-card '+(gap>=0?'positive-card':'');$('gapStatus').textContent=gap>=0?'CURRENT PLAN SURVIVES':'LIQUIDITY ARRIVES TOO LATE';$('gapExplain').textContent=gap>=0?'Current executable liquidity survives until the next committed source becomes available.':'Current liquidity is exhausted before the next committed source becomes executable.';
-  $('metricExecutable').textContent=E.fmtM(liveOperating);$('metricOutflow').textContent=E.fmtM(s.outflowRatePerMinute);$('metricNominal').textContent=E.fmtM(s.operatingLiquidity+s.routes.reduce((a,r)=>a+r.amount,0));$('metricBottleneck').textContent=gap>=0?'No binding timing gap':s.bottleneck;$('metricBottleneckNote').textContent=gap>=0?'within current horizon':'first gap';
-  const displayRoutes=s.routes.map(r=>r.id===executedRouteId?{...r,amount:0,state:'DEPLOYED',provenance:'ON_CHAIN'}:r);const rows=[{name:'Operating Wallet',amount:liveOperating,etaSeconds:0,state:'EXECUTABLE',provenance:'SCENARIO'},...displayRoutes];
-  $('routesBody').innerHTML=rows.map(r=>{const [assess,cls]=stateAssessment(r,{...s,operatingLiquidity:liveOperating});const timing=r.state==='EXECUTABLE'?'Now':r.state==='AVAILABLE'?`~${r.etaSeconds}s if executed`:r.state==='DEPLOYED'?'Confirmed on-chain':E.fmtSeconds(r.etaSeconds);return `<tr><td><strong>${r.name}</strong></td><td>${E.fmtM(r.amount)} LQUSD</td><td><span class="state">${timing}</span><br><small>${r.state}</small></td><td>${provenancePill(r.provenance)}</td><td class="${cls}">${assess}</td></tr>`;}).join('');
-  const rec=analysis.recommendation;if(gap>=0){$('actionTitle').textContent='No intervention required';$('actionAmount').textContent='Current plan remains viable';$('actionReason').textContent='The executable buffer reaches the next committed liquidity source before exhaustion.';$('actionEffect').textContent=`${E.fmtSeconds(gap)} gap`;$('executeBtn').disabled=true;}else if(rec){$('actionTitle').textContent=`Deploy ${rec.name}`;$('actionAmount').textContent=`${E.fmtM(rec.amount)} LQUSD`;$('actionReason').textContent=rec.sufficient?'Fastest available source large enough to bridge the first binding timing gap.':'No available route fully closes the gap; this is the fastest partial intervention.';$('actionEffect').textContent=`${E.fmtSeconds(gap)} → ${E.fmtSeconds(rec.effectSeconds)}`;$('executeBtn').disabled=executing||executedAmount>0;}
-  const initial=E.analyze(s);$('beforeExecutable').textContent=E.fmtM(s.operatingLiquidity);$('afterExecutable').textContent=E.fmtM(liveOperating);$('beforeBuffer').textContent=E.fmtSeconds(initial.bufferSeconds);$('afterBuffer').textContent=E.fmtSeconds(analysis.bufferSeconds);$('beforeGap').textContent=E.fmtSeconds(initial.base.gapSeconds);$('afterGap').textContent=E.fmtSeconds(gap);$('afterGap').className=gap>=0?'positive-text':'negative-text';document.querySelectorAll('[data-scenario]').forEach(b=>b.classList.toggle('active',b.dataset.scenario===currentKey));
+  return {raw:s,liveOperating,engineScenario:{...s,operatingLiquidity:liveOperating,routes:engineRoutes}};
 }
+
+function renderRoutes(s,liveOperating){
+  const displayRoutes=s.routes.map(r=>r.id===executedRouteId?{...r,amount:0,state:'DEPLOYED',provenance:'ON_CHAIN'}:r);
+  const rows=[{id:'operating',name:'Operating Wallet',amount:liveOperating,etaSeconds:0,state:'EXECUTABLE',provenance:'SCENARIO'},...displayRoutes];
+  $('routesBody').innerHTML=rows.map(r=>{
+    const arrival=r.state==='EXECUTABLE'?'Now':r.state==='AVAILABLE'?`~ ${r.etaSeconds} sec`:r.state==='DEPLOYED'?'Confirmed':`${Math.round(r.etaSeconds/60)} min`;
+    const rowClass=r.id==='sol'&&!executedRouteId?'route-highlight route-pulse':r.state==='DEPLOYED'?'route-confirmed':'';
+    return `<tr class="${rowClass}"><td><div class="source-cell"><span class="source-icon">${iconFor(r.id)}</span>${r.name}</div></td><td>${fmtAmount(r.amount)}</td><td>${arrival}</td><td><span class="status-pill ${cssStatus(r.state)}">${r.state[0]+r.state.slice(1).toLowerCase()}</span></td></tr>`
+  }).join('');
+}
+
+function render(animate=true){
+  const {raw:s,liveOperating,engineScenario}=buildLiveScenario();
+  const analysis=E.analyze(engineScenario);
+  const base=analysis.base;
+  const next=base.route;
+  const gap=base.gapSeconds;
+  const initial=E.analyze(s);
+  const recommendation=analysis.recommendation;
+
+  $('scenarioName').textContent=s.name;
+  if(animate){
+    animateText($('bufferClock'),lastValues.buffer,analysis.bufferSeconds,E.fmtSeconds);
+    animateText($('nextClock'),lastValues.next,next?.etaSeconds??0,E.fmtSeconds);
+    animateText($('survivalGap'),lastValues.gap,gap,E.fmtSeconds,650);
+    bump($('survivalGap'));
+  }else{
+    $('bufferClock').textContent=E.fmtSeconds(analysis.bufferSeconds);
+    $('nextClock').textContent=next?E.fmtSeconds(next.etaSeconds):'—';
+    $('survivalGap').textContent=E.fmtSeconds(gap);
+  }
+  lastValues={buffer:analysis.bufferSeconds,next:next?.etaSeconds??0,gap};
+
+  updateDial('bufferDial',analysis.bufferSeconds);
+  updateDial('nextDial',next?.etaSeconds??0);
+  $('survivalGap').className=`gap-value ${gap>=0?'positive':'negative'}`;
+  $('gapCard').className=`gap-card card ${gap>=0?'positive-card':''}`;
+  $('gapStatus').textContent=gap>=0?'Current plan survives.':'Liquidity arrives too late.';
+  $('gapAlert').querySelector('span').textContent=gap>=0?'✓':'!';
+  $('metricExecutable').textContent=fmtAmount(liveOperating);
+  $('nextRouteName').textContent=next?next.name:'No committed route';
+  $('nextAmount').textContent=next?fmtAmount(next.amount):'—';
+
+  renderRoutes(s,liveOperating);
+
+  const rec=recommendation;
+  if(gap>=0){
+    $('actionTitle').textContent='No intervention required';
+    $('actionAmount').textContent='Current plan survives';
+    $('executeBtn').disabled=true;
+    $('projectedGap').textContent=E.fmtSeconds(gap);
+    $('projectedGap').className='positive-text';
+  }else if(rec){
+    $('actionTitle').textContent=`Deploy ${rec.name}`;
+    $('actionAmount').textContent=fmtAmount(rec.amount);
+    $('executeBtn').disabled=executing||executedAmount>0;
+    $('projectedGap').textContent=E.fmtSeconds(rec.effectSeconds);
+    $('projectedGap').className=rec.effectSeconds>=0?'positive-text':'negative-text';
+  }
+
+  $('beforeGap').textContent=E.fmtSeconds(initial.base.gapSeconds);
+  $('beforeExecutable').textContent=E.fmtM(s.operatingLiquidity);
+  $('afterExecutable').textContent=E.fmtM(liveOperating);
+  $('beforeBuffer').textContent=E.fmtSeconds(initial.bufferSeconds);
+  $('afterBuffer').textContent=E.fmtSeconds(analysis.bufferSeconds);
+  $('impactBeforeGap').textContent=E.fmtSeconds(initial.base.gapSeconds);
+  $('afterGap').textContent=E.fmtSeconds(gap);
+  $('afterGap').className=gap>=0?'positive-text':'negative-text';
+
+  document.querySelectorAll('[data-scenario]').forEach(b=>b.classList.toggle('active',b.dataset.scenario===currentKey));
+  if(s.previewRescue&&executedAmount===0){
+    const preview=E.firstBindingGap(s,s.operatingLiquidity+3_150_000);
+    $('projectedGap').textContent=E.fmtSeconds(preview.gapSeconds);
+  }
+}
+
+function setProgress(stepIndex){
+  const steps=[...document.querySelectorAll('.progress-step')];
+  steps.forEach((el,i)=>{el.classList.toggle('done',i<stepIndex);el.classList.toggle('active',i===stepIndex)});
+  const width=Math.max(0,Math.min(100,(stepIndex/(steps.length-1))*100));
+  $('progressFill').style.width=`${width}%`;
+}
+function resetProgress(){setProgress(0)}
+function setProofStatus(title,status='NOT SUBMITTED'){$('proofStatus').textContent=title;$('proofTxStatus').textContent=status}
+
 async function execute(){
-  const s=scenarios[currentKey];const analysis=E.analyze({...s,operatingLiquidity:s.operatingLiquidity+executedAmount});const rec=analysis.recommendation;if(!rec||executing||executedAmount>0)return;
-  executing=true;$('executeBtn').disabled=true;$('executeBtn').textContent='CONFIRMING…';$('proofStatus').textContent='Executing liquidity route';$('proofTxStatus').textContent='CONFIRMING';$('proofAmount').textContent=`${E.fmtM(rec.amount)} LQUSD`;
-  try{const proof=await window.SolanaAdapter.execute({amount:rec.amount,route:rec});if(!proof.ok)throw new Error('Execution failed');executedAmount+=rec.amount;executedRouteId=rec.id;$('proofStatus').textContent='Confirmed on Solana';$('proofAmount').textContent=`${proof.proofTransferSol.toFixed(5)} SOL proof / ${E.fmtM(rec.amount)} LQUSD scenario`;$('proofTxStatus').textContent=String(proof.confirmationStatus||'CONFIRMED').toUpperCase();$('proofNetwork').textContent=proof.network||'SOLANA DEVNET';$('proofExecution').textContent=`${proof.executionSeconds.toFixed(2)} sec`;$('proofNetworkTime').textContent=proof.networkSeconds!=null?`${proof.networkSeconds.toFixed(2)} sec`:'—';$('proofSignature').textContent=proof.signature;$('proofSlot').textContent=proof.slot??'—';if(proof.explorer){$('proofExplorer').href=proof.explorer;$('proofExplorer').hidden=false;}$('proofNote').textContent=proof.note||'Verified Solana Devnet settlement. Balance is recalculated from the confirmed state.';updateWalletState();}
-  catch(err){$('proofStatus').textContent='Transaction failed';$('proofTxStatus').textContent='FAILED';$('proofNote').textContent=String(err);}
-  executing=false;$('executeBtn').textContent='EXECUTE LIQUIDITY';render();
+  const {raw:s,engineScenario}=buildLiveScenario();
+  const analysis=E.analyze(engineScenario);const rec=analysis.recommendation;
+  if(!rec||executing||executedAmount>0)return;
+  executing=true;
+  $('executeBtn').disabled=true;$('executeBtn').querySelector('span').textContent='Executing…';
+  setProofStatus('Preparing Devnet transaction','PREPARING');setProgress(0);
+  try{
+    await updateWalletState();
+    setProgress(1);setProofStatus('Approve in Phantom','AWAITING SIGNATURE');
+    const proofPromise=window.SolanaAdapter.execute({amount:rec.amount,route:rec});
+    await new Promise(r=>setTimeout(r,250));
+    setProgress(2);setProofStatus('Submitting to Solana Devnet','SUBMITTED');
+    const proof=await proofPromise;
+    if(!proof.ok)throw new Error('Execution failed');
+    setProgress(3);setProofStatus('Confirming on Solana','CONFIRMING');
+    await new Promise(r=>setTimeout(r,280));
+
+    executedAmount+=rec.amount;executedRouteId=rec.id;
+    setProgress(4);setProofStatus('Confirmed on Solana','CONFIRMED');
+    $('proofExecution').textContent=`${proof.executionSeconds.toFixed(2)} sec`;
+    $('proofSignature').textContent=proof.signature;
+    $('proofSignature').title=proof.signature;
+    $('proofSlot').textContent=proof.slot??'—';
+    if(proof.explorer){$('proofExplorer').href=proof.explorer;$('proofExplorer').hidden=false}
+    $('actionPanel').classList.add('pulse-green');$('executionPanel').classList.add('pulse-green');setTimeout(()=>{$('actionPanel').classList.remove('pulse-green');$('executionPanel').classList.remove('pulse-green')},1400);
+    render(true);await updateWalletState();
+  }catch(err){
+    setProofStatus('Transaction not completed','FAILED');$('proofExecution').textContent='—';
+    $('gapCard').classList.add('shake');setTimeout(()=>$('gapCard').classList.remove('shake'),400);
+    resetProgress();
+    console.error(err);
+  }finally{
+    executing=false;$('executeBtn').querySelector('span').textContent='Execute Liquidity';render(false)
+  }
 }
-function reset(){executedAmount=0;executedRouteId=null;executing=false;$('proofStatus').textContent='Awaiting intervention';$('proofTxStatus').textContent='NOT SUBMITTED';$('proofAmount').textContent='—';$('proofExecution').textContent='—';$('proofNetworkTime').textContent='—';$('proofSignature').textContent='—';$('proofSlot').textContent='—';$('proofExplorer').hidden=true;$('proofExplorer').href='#';$('proofNetwork').textContent='SOLANA DEVNET';$('proofNote').textContent='Connect a development Phantom wallet. The final execution state is applied only after a real Solana Devnet transaction confirms.';render();if(scenarios[currentKey].autoRescue)setTimeout(execute,450)}
-function shortAddr(a){return !a?'Not connected':a.length>18?`${a.slice(0,7)}…${a.slice(-7)}`:a}
-async function updateWalletState(){try{const st=await window.SolanaAdapter.getState();$('walletAddress').textContent=st.connected?shortAddr(st.wallet):(st.available?'Phantom available — not connected':'Phantom not detected');$('walletAddress').title=st.wallet||'';$('walletBalance').textContent=st.connected?`${st.balanceSol.toFixed(5)} SOL`:'—';$('connectWalletBtn').textContent=st.connected?'WALLET CONNECTED':'CONNECT PHANTOM';$('fundWalletBtn').disabled=!st.connected;}catch(e){$('walletAddress').textContent='Wallet status unavailable';$('walletBalance').textContent='—';}}
-async function connectWallet(){$('connectWalletBtn').disabled=true;$('connectWalletBtn').textContent='CONNECTING…';try{await window.SolanaAdapter.connect();await updateWalletState();}catch(e){$('proofStatus').textContent='Wallet connection required';$('proofNote').textContent=String(e);}$('connectWalletBtn').disabled=false;}
-async function fundWallet(){$('fundWalletBtn').disabled=true;$('fundWalletBtn').textContent='FUNDING…';try{const r=await window.SolanaAdapter.fundDevnet(0.02);$('proofStatus').textContent=r.alreadyFunded?'Devnet wallet already funded':'Devnet funding confirmed';$('proofNote').textContent=r.alreadyFunded?'No faucet transaction was needed.':'Test SOL received on Solana Devnet. Ready for the execution proof.';await updateWalletState();}catch(e){$('proofStatus').textContent='Devnet funding failed';$('proofNote').textContent=String(e);}$('fundWalletBtn').textContent='FUND DEVNET';$('fundWalletBtn').disabled=false;}
-document.querySelectorAll('[data-scenario]').forEach(btn=>btn.addEventListener('click',()=>{currentKey=btn.dataset.scenario;reset()}));$('executeBtn').addEventListener('click',execute);$('resetBtn').addEventListener('click',reset);$('connectWalletBtn').addEventListener('click',connectWallet);$('fundWalletBtn').addEventListener('click',fundWallet);reset();updateWalletState();
+
+function reset(){
+  executedAmount=0;executedRouteId=null;executing=false;lastValues={buffer:null,next:null,gap:null};
+  setProofStatus('Ready for Devnet execution','NOT SUBMITTED');$('proofExecution').textContent='—';$('proofSignature').textContent='—';$('proofSlot').textContent='—';$('proofExplorer').hidden=true;$('proofExplorer').href='#';resetProgress();render(true)
+}
+
+async function updateWalletState(){
+  try{
+    const st=await window.SolanaAdapter.getState();
+    $('walletAddress').textContent=st.connected?shortAddr(st.wallet):(st.available?'Phantom available — connect':'Phantom not detected');
+    $('walletAddress').title=st.wallet||'';$('walletBalance').textContent=st.connected?`${st.balanceSol.toFixed(5)} SOL`:'—';
+    $('connectWalletBtn').textContent=st.connected?'Phantom connected':'Connect Phantom';$('fundWalletBtn').disabled=!st.connected;
+    $('chainPill').classList.toggle('connected',!!st.connected);
+  }catch(e){$('walletAddress').textContent='Wallet status unavailable';$('walletBalance').textContent='—'}
+}
+async function connectWallet(){
+  $('connectWalletBtn').disabled=true;$('connectWalletBtn').textContent='Connecting…';
+  try{await window.SolanaAdapter.connect();await updateWalletState();setProofStatus('Wallet connected — ready','READY')}
+  catch(e){setProofStatus('Connect a development Phantom wallet','WALLET REQUIRED');console.error(e)}
+  $('connectWalletBtn').disabled=false;
+}
+async function fundWallet(){
+  $('fundWalletBtn').disabled=true;$('fundWalletBtn').textContent='Funding…';
+  try{const r=await window.SolanaAdapter.fundDevnet(0.02);setProofStatus(r.alreadyFunded?'Devnet wallet already funded':'Devnet funding confirmed','READY');await updateWalletState()}
+  catch(e){setProofStatus('Devnet funding failed','FAILED');console.error(e)}
+  $('fundWalletBtn').textContent='Fund Devnet';$('fundWalletBtn').disabled=false;
+}
+
+document.querySelectorAll('[data-scenario]').forEach(btn=>btn.addEventListener('click',()=>{currentKey=btn.dataset.scenario;reset()}));
+$('executeBtn').addEventListener('click',execute);$('connectWalletBtn').addEventListener('click',connectWallet);$('fundWalletBtn').addEventListener('click',fundWallet);
+reset();updateWalletState();
