@@ -2,7 +2,7 @@
 
 **Will executable liquidity arrive before your buffer runs out?**
 
-Liquidity Clock is a public-safe synthetic stress engine for digital-asset treasuries. It compares current executable liquidity with stress outflow velocity, walks committed liquidity routes chronologically, identifies the first binding timing gap, and tests available interventions.
+Liquidity Clock is a public-safe stress engine for digital-asset treasuries. It compares current executable liquidity with stress outflow velocity, walks committed liquidity routes chronologically, identifies the first binding timing gap, and tests available interventions.
 
 ## Core metric
 
@@ -20,33 +20,36 @@ A negative gap means the treasury exhausts its executable buffer before the next
 - Available intervention: **3.15M LQUSD Solana reserve (synthetic notional)**
 - Projected after confirmed execution proof: operating liquidity **4.65M**, buffer horizon **31 min**, Survival Gap **+14 min**
 
-## Real Solana Devnet proof path — implemented, live signature pending
+## One-click real Solana Devnet proof
 
-The browser adapter connects to Phantom and is implemented to send a **real 0.00315 Devnet SOL transfer** to an ephemeral demo recipient. The transaction flow signs through the connected development wallet, submits to `https://api.devnet.solana.com`, waits for confirmation, and surfaces:
+The public MVP no longer requires Phantom or a user wallet.
 
-- real transaction signature;
-- confirmation status;
-- actual transaction slot;
-- end-to-end execution time;
-- network confirmation time;
-- Solana Explorer link;
-- post-transaction Devnet wallet balance.
+When **Run Live Devnet Proof** is pressed, the browser:
 
-The final public proof is **not considered complete until a real development-wallet transaction is signed and confirmed in the user's browser**.
+1. creates a temporary Solana keypair **in memory only**;
+2. checks its Devnet balance;
+3. requests a small amount of test SOL from the Devnet faucet if needed;
+4. signs a real **0.00315 Devnet SOL** transfer locally in browser memory;
+5. submits it to `https://api.devnet.solana.com`;
+6. waits for network confirmation;
+7. surfaces the real transaction signature, slot, timing and Explorer link;
+8. only then applies the synthetic intervention to the Liquidity Clock scenario.
 
-The **3.15M LQUSD** amount is synthetic stress-test notional. It is deliberately not represented as a real-valued token. The Devnet SOL transfer is the current public MVP's execution/settlement-timing proof for the route; it is not presented as a real 3.15M-value liquidity movement.
+The temporary private key is not displayed, exported or persisted by the app. Reloading the page creates a new demo wallet.
 
-The engine does **not** apply the 3.15M scenario intervention until the Devnet proof transaction confirms.
+The **3.15M LQUSD** amount is synthetic stress-test notional. It is deliberately not represented as a real-valued token. The Devnet SOL transfer is execution/settlement proof for the demo route; it is not presented as a real 3.15M-value liquidity movement.
 
-## Wallet safety
+**Status:** the self-contained proof path is implemented. The final public proof remains pending until a real Devnet transaction is successfully confirmed and recorded.
 
-Use a **development wallet only**. Do not use a wallet holding valuable mainnet assets. The app includes a Devnet faucet action and never requires mainnet SOL.
+## Why no browser wallet is required
+
+This is a public testnet demonstration, not a custody flow. Requiring a reviewer to install/connect Phantom adds friction without improving the core proof. The MVP therefore uses a disposable in-memory keypair only for Devnet test SOL. A production system would use an institutional signer / custody policy layer rather than a raw browser keypair.
 
 ## Run locally
 
-The deterministic app shell has no package-manager dependencies. Real chain execution loads the pinned Solana Web3 browser bundle from jsDelivr, so internet access and Phantom are required for the Devnet transaction.
+The deterministic app shell has no package-manager dependencies. Real chain execution loads the pinned Solana Web3 browser bundle from jsDelivr, so internet access is required for Devnet execution.
 
-On macOS, use `RUN_ON_MAC.command`. It selects a free local port, opens Chrome when available, and cleans up the local server when the Terminal process closes.
+On macOS, use `RUN_ON_MAC.command`.
 
 Manual fallback:
 
@@ -56,16 +59,18 @@ python3 -m http.server 8080
 
 Then open `http://localhost:8080`.
 
-## Custom stress mode
+## Custom Stress
 
-The public MVP includes a user-defined scenario builder. Reviewers can change executable liquidity, stress outflow, next committed arrival and available reserve inputs; the deterministic engine recalculates the buffer horizon, binding Survival Gap and intervention recommendation. **Reserve ETA is binding in the engine**: a route that arrives after buffer exhaustion is not recommended.
+Reviewers can change executable liquidity, stress outflow, next committed arrival and available reserve inputs. The deterministic engine recalculates the buffer horizon, binding Survival Gap and intervention recommendation.
+
+**Reserve ETA is binding**: a route that arrives after buffer exhaustion is not recommended.
 
 ## Architecture
 
 - `engine.js` — deterministic survival-gap and intervention engine
-- `app.js` — scenarios, state, rendering, wallet controls, user flow
-- `solana-adapter.js` — Phantom + Solana Devnet execution adapter
-- `index.html` / `styles.css` — single-page institutional UI
+- `app.js` — scenarios, state, rendering and one-click proof flow
+- `solana-adapter.js` — self-contained temporary Devnet wallet + real execution proof
+- `index.html` / `styles.css` / `custom.css` — single-page institutional UI
 
 ## Public-safety boundary
 
@@ -75,27 +80,19 @@ All institutions, balances, rates, routes and timings in the public MVP are synt
 
 1. Open **Timing Stress**.
 2. Observe the initial `−7 min` Survival Gap.
-3. Optionally open **Custom Stress** and change the inputs to test a new configuration.
-4. Connect a development-only Phantom wallet on Solana Devnet.
-5. Fund it with test SOL if needed.
-6. Execute the proof transaction.
-7. Wait for confirmed settlement.
-8. Observe the recalculated Survival Gap and transaction proof.
-
-See [`DEMO.md`](DEMO.md) for the 90-second judge flow.
-
-## Hackathon provenance
-
-See [`HACKATHON_DISCLOSURE.md`](HACKATHON_DISCLOSURE.md) for the explicit separation between pre-existing research insight and the public product/code built for the hackathon.
+3. Click **Run Live Devnet Proof**.
+4. Watch `Prepare → Sign → Submit → Confirm → Complete`.
+5. Verify the real signature / slot / Explorer link.
+6. Observe the synthetic scenario move to `+14 min` only after confirmation.
 
 ## Validation
 
-Early customer-discovery responses should be logged conservatively in [`VALIDATION.md`](VALIDATION.md). No traction claim should be made without real responses.
+Early customer-discovery responses are logged conservatively in `VALIDATION.md`. No traction claim is made without real responses.
 
-## Pre-submission audit
+## Audit
 
-See [`HOSTILE_JUDGE_AUDIT.md`](HOSTILE_JUDGE_AUDIT.md) and [`INTERACTION_QA.md`](INTERACTION_QA.md) for the current product and submission risks.
+See `HOSTILE_JUDGE_AUDIT.md` and `INTERACTION_QA.md`.
 
 ## License
 
-MIT. See [`LICENSE`](LICENSE).
+MIT.
