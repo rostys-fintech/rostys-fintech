@@ -1,6 +1,6 @@
 # Liquidity Clock — Colosseum Submission Package
 
-Status: SUBMISSION-READY EXCEPT PERMANENT LIVE URL / FIRST EXPLORER-CONFIRMED SOLANA PROOF / FINAL VIDEOS / VALIDATION COUNTS
+Status: SUBMISSION-READY EXCEPT FINAL VIDEOS / VALIDATION COUNTS / OPTIONAL EXPLORER-CONFIRMED SOLANA PROOF
 Date: 2026-10-02
 
 ## Product name
@@ -37,9 +37,9 @@ Germany. Ukrainian founder currently based in Germany.
 Solana Devnet and Testnet, browser-based Solana Web3 integration, dedicated test-only browser signer, deterministic JavaScript liquidity engine and static responsive web UI.
 
 ## Why Solana
-Solana is used as a verifiable execution rail rather than a decorative data layer. The MVP can attempt a real public test-cluster proof without asking a reviewer to install or connect a wallet. One click tries Devnet first and Testnet second, signs locally, submits when test SOL is available, waits for confirmation and surfaces the real signature, slot and Explorer link. Only an Explorer-confirmed transaction changes the synthetic treasury state.
+Solana is used as a verifiable execution rail rather than a decorative data layer. The product demo itself is deterministic and one-click, so it remains usable even when public test-cluster funding is rate-limited. Live Solana verification runs as a separate background proof layer: the app tries Devnet first and Testnet second, signs locally, submits when test SOL is available, waits for confirmation, and surfaces the real signature, slot and Explorer link only when the chain actually confirms.
 
-If public test funding is temporarily rate-limited on both clusters, the app creates a fresh network-bound signed transaction and labels it **SIGNED / NOT BROADCAST**. It does not show a slot or Explorer link and does not mutate the treasury state. This keeps the demo usable without making a false on-chain claim.
+If public test funding is unavailable, the app can still show a locally signed proof state but does not label it as on-chain confirmation. This keeps the user flow simple without making a false blockchain claim.
 
 ## Security / signer boundary
 The MVP uses a dedicated test-only browser signer and never requires mainnet funds. The signer is not a production custody mechanism. A production version would use an institutional signer, custody provider, approval policy and access-control layer.
@@ -48,12 +48,11 @@ The MVP uses a dedicated test-only browser signer and never requires mainnet fun
 1. Synthetic treasury scenario defines operating liquidity, stress outflow and route timing.
 2. Deterministic engine calculates buffer horizon and first binding Survival Gap.
 3. Available interventions are tested for timing and sufficiency.
-4. The selected demo route triggers a one-click Solana proof flow.
-5. Devnet is attempted first; Testnet is the automatic fallback.
-6. If test SOL is available, the transaction is signed, submitted and confirmed on-chain.
-7. The app surfaces signature / slot / timing / Explorer for a confirmed transaction.
-8. Only after confirmation does the engine apply the synthetic intervention and recalculate the Survival Gap.
-9. If public test funding is unavailable, the app returns a signed-only proof and leaves the treasury state unchanged.
+4. The user runs the recommended liquidity rescue with one click.
+5. The deterministic scenario immediately demonstrates the projected effect and recalculates the Survival Gap.
+6. In parallel, the Solana verification layer attempts Devnet first and Testnet second.
+7. If a public test-cluster transaction confirms, the app surfaces real signature / slot / timing / Explorer evidence.
+8. If public funding is unavailable, no false on-chain success is shown.
 
 ## Golden demo
 Before:
@@ -66,33 +65,34 @@ Before:
 Intervention:
 - Deploy Solana Reserve
 - Scenario notional: 3.15M LQUSD
-- Real proof path: self-contained Solana test-cluster transaction
 
-After a confirmed proof:
+Simulated product outcome:
 - Executable liquidity: 4.65M LQUSD
 - Buffer horizon: 31:00
 - Next committed liquidity: 17:00
 - Survival Gap: +14:00
 
+Optional live verification:
+- Real Solana public test-cluster proof when test funding is available.
+- Real slot / signature / Explorer shown only after actual chain confirmation.
+
 ## Generalization beyond the golden demo
 The MVP includes Custom Stress. A reviewer can change executable liquidity, stress outflow, next committed amount / arrival time, and reserve amount / ETA. The deterministic engine recomputes the Survival Gap and refuses to recommend an intervention that arrives after buffer exhaustion.
 
 ## Current Solana scope — precise claim
-The public MVP can produce an Explorer-verifiable Solana test-cluster transaction when public test funding is available. Treasury amounts such as 3.15M LQUSD remain synthetic public-safe scenario notional. The proof verifies the execution workflow and timing, not a real 3.15M-value asset movement.
-
-A `SIGNED / NOT BROADCAST` fallback is not counted as on-chain execution proof.
+Treasury amounts such as 3.15M LQUSD remain synthetic public-safe scenario notional. The live Solana layer verifies execution / settlement workflow when a transaction actually confirms; it is not presented as a real 3.15M-value asset movement.
 
 ## GitHub
 https://github.com/rostys-fintech/rostys-fintech/tree/liquidity-clock
 
 ## Product URL
-PENDING PERMANENT LIVE DEPLOYMENT
+https://rostys-fintech.github.io/rostys-fintech/
 
 ## Pitch video
 PENDING FINAL RECORDING
 
 ## Technical demo
-PENDING FINAL RECORDING AFTER FIRST EXPLORER-CONFIRMED SOLANA PROOF
+PENDING FINAL RECORDING
 
 ## Go-to-market
 Land with a free Liquidity Stress Diagnostic that lets treasury teams map route amount + ETA + rail and identify the first binding timing gap. Expand into live wallet / custodian / exchange integrations, execution-time calibration, monitoring, alerts and execution orchestration.
@@ -125,8 +125,8 @@ All institutions, balances, rates, routes and scenario timings in the public MVP
 ## Claims we may make
 - Synthetic public-safe stress engine.
 - Deterministic first-binding-gap logic.
-- Real Solana test-cluster execution proof once a transaction is actually confirmed.
-- Signed-only fallback that is explicitly not presented as on-chain confirmation.
+- One-click simulated liquidity rescue.
+- Real Solana test-cluster verification only when a transaction is actually confirmed.
 - Transparent separation between synthetic notional and chain proof.
 
 ## Claims we must NOT make
