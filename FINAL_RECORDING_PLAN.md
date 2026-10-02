@@ -2,7 +2,7 @@
 
 ## Goal
 
-Record two clean submission videos after the first real one-click Devnet proof is confirmed.
+Record two clean submission videos after the first real Devnet proof is confirmed.
 
 ## Video A — Pitch
 
@@ -28,6 +28,7 @@ Use `TECHNICAL_DEMO_SCRIPT.md`.
 Pre-recording setup:
 
 - Timing Stress selected.
+- Persistent Devnet demo wallet already has enough test SOL if the public faucet is rate-limited.
 - No old proof values on-screen.
 - Browser zoom adjusted so hero + action card are clear.
 - Close unrelated tabs and notifications.
@@ -47,9 +48,20 @@ Recording sequence:
 10. Return and show `-07:00 → +14:00`, `1.50M → 4.65M`, `10:00 → 31:00`.
 11. Optional: Custom Stress if still under 3 minutes.
 
+## Faucet contingency
+
+If automatic `requestAirdrop` returns a 429 during setup, use the in-app **Devnet Funding Fallback** once before recording:
+
+1. Copy the persistent demo address.
+2. Fund it with Devnet test SOL via an external faucet.
+3. Return to the same browser.
+4. Press **Run Live Devnet Proof** again.
+
+The demo address persists in browser storage, so this setup survives refreshes. Do not show the faucet setup in the final video unless needed to explain resilience.
+
 ## Privacy gate
 
-The demo uses only a temporary in-memory Devnet keypair. Do not display or export any private key material. Never show personal browser tabs/messages or private academic/reviewer materials.
+The demo uses only a dedicated Devnet-only browser keypair. Do not display or export private key material. Never show personal browser tabs/messages or private academic/reviewer materials.
 
 ## Proof capture
 
@@ -57,7 +69,7 @@ After the real transaction, save in `DEVNET_PROOF_RECORD.md`:
 
 - date/time;
 - network;
-- ephemeral source wallet (shortened);
+- source demo wallet (shortened);
 - proof transfer amount in test SOL;
 - execution time;
 - slot;
