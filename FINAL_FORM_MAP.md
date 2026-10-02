@@ -1,6 +1,6 @@
 # Liquidity Clock — Final Colosseum Form Map
 
-Status: PREFILLED EXCEPT VIDEO URLS / REAL VALIDATION
+Status: SUBMISSION-READY EXCEPT REAL VALIDATION (OPTIONAL)
 Date: 2026-10-02
 Hackathon: Crypto World's Fair — Colosseum
 Submission deadline: 2026-10-12
@@ -47,27 +47,31 @@ https://github.com/rostys-fintech/rostys-fintech/tree/liquidity-clock
 
 https://rostys-fintech.github.io/rostys-fintech/
 
-## 9. Pitch video — PENDING URL
+## 9. Pitch video — READY
 
-Target length: 2:05–2:20.
+Public page:
+https://liquidity-clock-videos.floot.app/pitch
 
-Use `PITCH_SCRIPT.md`.
+Direct MP4:
+https://liquidity-clock-videos.floot.app/_cdn/static/ead635b3-a328-4a74-8ce3-57e7ed39df73-liquidity-clock-pitch.mp4
 
-Final file: `liquidity-clock-pitch.mp4`
+Duration: 2:15.
 
-## 10. Product-demo video — PENDING URL
+## 10. Product-demo video — READY
 
-Target length: 1:35–1:55.
+Public page:
+https://liquidity-clock-videos.floot.app/demo
 
-Use `TECHNICAL_DEMO_SCRIPT.md` and `VIDEO_SHOTLIST.md`.
+Direct MP4:
+https://liquidity-clock-videos.floot.app/_cdn/static/2f1bb132-35e7-49e3-b424-f1f0854adea5-liquidity-clock-demo.mp4
 
-Final file: `liquidity-clock-demo.mp4`
+Duration: 1:43.
 
 ## 11. Go-to-market strategy — READY
 
 Start with a free Liquidity Stress Diagnostic for treasury and liquidity-risk teams. Map route amount, ETA and execution rail, then identify the first binding timing gap. Recruit early design partners through founder-led outreach and crypto treasury / operations communities. Expand into live wallet, custodian and exchange integrations, execution-time calibration, monitoring, alerts and liquidity orchestration.
 
-## 12. Demand validation — PENDING REAL EVIDENCE
+## 12. Demand validation — OPTIONAL / USE SAFE WORDING IF NO RESPONSES
 
 Do not invent counts, users, quotes, pilots or revenue.
 
@@ -128,16 +132,16 @@ Do not claim:
 - founder background
 - location
 - chain / tools
+- pitch video
+- technical demo video
 - GTM
 - distribution
 - business model hypothesis
 - venture vision
 - claims wording
 
-### PENDING
+### OPTIONAL BEFORE SUBMIT
 
-1. Pitch video URL.
-2. Product-demo video URL.
-3. Real validation evidence, if available before submission.
+- Replace safe validation wording only if real customer-discovery evidence is received.
 
-After the two video URLs are inserted, run one final portal audit and submit.
+Otherwise the package is ready for final portal entry and submission.
