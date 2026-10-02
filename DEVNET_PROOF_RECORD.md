@@ -8,9 +8,9 @@ Fill only from the actual confirmed transaction shown by the app / Solana Explor
 
 - Date/time: PENDING
 - Network: Solana Devnet
-- Signer mode: ephemeral in-memory browser keypair
+- Signer mode: persistent Devnet-only browser demo keypair
 - Source wallet (shortened): PENDING
-- Proof transfer: 0.00315 test SOL
+- Proof transfer: 0.0000315 test SOL
 - Confirmation status: PENDING
 - End-to-end execution time: PENDING
 - Network confirmation time: PENDING
@@ -33,9 +33,13 @@ Synthetic scenario only:
 
 The Devnet transaction is real execution / settlement proof using test SOL.
 
-The signing key is generated in browser memory for the demo and is not persisted by the app.
+The demo signing key is stored only in this browser for Devnet testing so faucet funding can survive reloads. It is not a production custody key and must never be used for mainnet assets.
 
 The 3.15M LQUSD scenario amount is synthetic public-safe notional and is not represented as a real-valued on-chain asset movement.
+
+## Faucet fallback
+
+If automatic Devnet funding is rate-limited, fund the exact persistent demo address shown by the app once with test SOL, then retry the proof. Do not claim a completed proof until the subsequent transaction confirms and appears in Explorer.
 
 ## Evidence files
 
