@@ -46,7 +46,7 @@
       <div><div class="micro-label" id="scenarioName">NOVA Exchange — Timing Stress</div><h1>Will executable liquidity arrive<br class="desktop-break"> before your buffer runs out?</h1></div>
       <div class="synthetic-wrap">
         <button type="button" class="synthetic-badge info-control" id="syntheticInfoBtn" aria-expanded="false" aria-controls="syntheticInfoPanel">SYNTHETIC SCENARIO <span aria-hidden="true">ⓘ</span></button>
-        <div class="info-popover" id="syntheticInfoPanel" hidden><b>Public-safe demo.</b><br>Financial amounts and scenarios are synthetic. The execution proof uses only test SOL on Solana Devnet and a temporary in-memory demo keypair.</div>
+        <div class="info-popover" id="syntheticInfoPanel" hidden><b>Public-safe demo.</b><br>Financial amounts and scenarios are synthetic. The execution proof uses only test SOL on Solana Devnet and a Devnet-only demo keypair stored in this browser so faucet funding survives reloads.</div>
       </div>
     </section>
 
@@ -75,16 +75,25 @@
         <div class="action-title-row"><span class="bolt">ϟ</span><span>RECOMMENDED ACTION</span></div>
         <div class="action-main"><div class="solana-mark large" aria-hidden="true"><i></i><i></i><i></i></div><div><h2 id="actionTitle">Deploy Solana Reserve</h2><div id="actionAmount">3.15M LQUSD</div></div></div>
         <button type="button" id="executeBtn" class="execute-btn"><span>Run Live Devnet Proof</span><b>→</b></button>
-        <div class="action-hint" id="actionHint" aria-live="polite">One click creates a temporary in-memory Devnet wallet, funds it with test SOL and runs a real transaction. No Phantom required.</div>
+        <div class="action-hint" id="actionHint" aria-live="polite">One click uses a browser-stored Devnet-only demo wallet, auto-funds it when the public faucet is available, and runs a real transaction. No Phantom required.</div>
         <div class="impact-strip"><div><small>Survival gap</small><strong class="negative-text" id="beforeGap">−07:00</strong><em>before</em></div><div class="impact-arrow">→</div><div><small>&nbsp;</small><strong class="positive-text" id="projectedGap">+14:00</strong><em>after</em></div></div>
       </article>
     </section>
 
     <section class="execution-panel card reveal delay-4" id="executionPanel">
-      <div class="execution-top"><div><div class="micro-label">EXECUTION PROOF</div><h2 id="proofStatus">Ready — no wallet required</h2><div class="interaction-notice" id="interactionNotice" role="status" aria-live="polite" hidden></div></div><div class="wallet-mini"><span id="walletAddress">Creating ephemeral demo wallet…</span><b id="walletBalance">—</b></div></div>
+      <div class="execution-top"><div><div class="micro-label">EXECUTION PROOF</div><h2 id="proofStatus">Ready — no wallet required</h2><div class="interaction-notice" id="interactionNotice" role="status" aria-live="polite" hidden></div></div><div class="wallet-mini"><span id="walletAddress">Creating Devnet demo wallet…</span><b id="walletBalance">—</b></div></div>
       <div class="progress-track" id="progressTrack"><div class="progress-line"><span id="progressFill"></span></div><div class="progress-step active" data-step="prepare"><i></i><span>Prepare</span></div><div class="progress-step" data-step="sign"><i></i><span>Sign</span></div><div class="progress-step" data-step="submit"><i></i><span>Submit</span></div><div class="progress-step" data-step="confirm"><i></i><span>Confirm</span></div><div class="progress-step" data-step="complete"><i></i><span>Complete</span></div></div>
       <div class="proof-row" id="proofRow"><div><small>Status</small><b id="proofTxStatus">NOT SUBMITTED</b></div><div><small>Execution</small><b id="proofExecution">—</b></div><div><small>Slot</small><b id="proofSlot">—</b></div><div class="signature"><small>Signature</small><code id="proofSignature">—</code></div><a id="proofExplorer" class="explorer-link" href="#" target="_blank" rel="noopener" hidden>View on Explorer ↗</a><button type="button" id="copySignatureBtn" class="copy-proof" hidden>Copy signature</button></div>
-      <a id="faucetLink" class="faucet-link" href="https://faucet.solana.com/" target="_blank" rel="noopener" hidden>Open Solana Devnet faucet ↗</a>
+      <div id="faucetFallback" class="faucet-fallback" hidden>
+        <div class="micro-label">DEVNET FUNDING FALLBACK</div>
+        <div class="faucet-address"><small>Persistent demo address</small><code id="demoWalletFull">—</code></div>
+        <div class="faucet-actions">
+          <button type="button" id="copyWalletBtn" class="copy-proof">Copy demo address</button>
+          <a id="faucetLink" class="faucet-link button-link" href="https://faucet.solana.com/" target="_blank" rel="noopener">Solana Faucet ↗</a>
+          <a id="quicknodeFaucetLink" class="faucet-link button-link" href="https://faucet.quicknode.com/solana/devnet" target="_blank" rel="noopener">QuickNode Faucet ↗</a>
+        </div>
+        <p>Fund this Devnet-only address once with test SOL, return here, and press <b>Run Live Devnet Proof</b> again. The address is kept in this browser, so it will not change on refresh.</p>
+      </div>
     </section>
 
     <section class="impact-panel card reveal delay-4" id="impactPanel"><div class="micro-label">BEFORE → AFTER</div><div class="impact-cards"><div><small>Executable liquidity</small><b id="beforeExecutable">1.50M</b><span>→</span><strong id="afterExecutable">1.50M</strong></div><div><small>Buffer horizon</small><b id="beforeBuffer">10:00</b><span>→</span><strong id="afterBuffer">10:00</strong></div><div><small>Survival gap</small><b class="negative-text" id="impactBeforeGap">−07:00</b><span>→</span><strong class="negative-text" id="afterGap">−07:00</strong></div></div></section>
