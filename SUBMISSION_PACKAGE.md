@@ -1,6 +1,6 @@
 # Liquidity Clock — Colosseum Submission Package
 
-Status: SUBMISSION-READY EXCEPT FINAL VIDEOS / VALIDATION COUNTS / OPTIONAL EXPLORER-CONFIRMED SOLANA PROOF
+Status: SUBMISSION-READY EXCEPT OPTIONAL REAL VALIDATION / OPTIONAL EXPLORER-CONFIRMED SOLANA PROOF
 Date: 2026-10-02
 
 ## Product name
@@ -89,10 +89,22 @@ https://github.com/rostys-fintech/rostys-fintech/tree/liquidity-clock
 https://rostys-fintech.github.io/rostys-fintech/
 
 ## Pitch video
-PENDING FINAL RECORDING
+Public page:
+https://liquidity-clock-videos.floot.app/pitch
+
+Direct MP4:
+https://liquidity-clock-videos.floot.app/_cdn/static/ead635b3-a328-4a74-8ce3-57e7ed39df73-liquidity-clock-pitch.mp4
+
+Duration: 2:15.
 
 ## Technical demo
-PENDING FINAL RECORDING
+Public page:
+https://liquidity-clock-videos.floot.app/demo
+
+Direct MP4:
+https://liquidity-clock-videos.floot.app/_cdn/static/2f1bb132-35e7-49e3-b424-f1f0854adea5-liquidity-clock-demo.mp4
+
+Duration: 1:43.
 
 ## Go-to-market
 Land with a free Liquidity Stress Diagnostic that lets treasury teams map route amount + ETA + rail and identify the first binding timing gap. Expand into live wallet / custodian / exchange integrations, execution-time calibration, monitoring, alerts and execution orchestration.
@@ -104,7 +116,12 @@ B2B SaaS. Initial design-partner pilots are free. Later pricing is a hypothesis 
 Existing treasury infrastructure helps teams see, control and move liquidity. Liquidity Clock adds a stress-time decision layer: will that liquidity actually arrive before the executable buffer runs out?
 
 ## Validation
-STATUS: PENDING REAL RESPONSES.
+STATUS: REAL CUSTOMER-DISCOVERY EVIDENCE OPTIONAL BEFORE SUBMIT.
+
+Safe wording if no responses are available:
+
+> Early customer discovery is ongoing. The current MVP is designed to test whether treasury and liquidity-risk teams find time-to-executable-liquidity more decision-useful than a balance-only view. No paying-customer or validated-demand claim is made yet.
+
 Do not enter invented counts, quotes, users, revenue or customer claims.
 
 ## Distribution plan
@@ -136,3 +153,22 @@ All institutions, balances, rates, routes and scenario timings in the public MVP
 - Live on-chain proof before a transaction is actually confirmed.
 - Prediction of insolvency or bank failures.
 - Solana eliminates liquidity risk.
+
+## FINAL GATE
+
+Ready now:
+- product
+- public product URL
+- GitHub
+- pitch video URL
+- technical demo URL
+- founder / team / location
+- chain / technology description
+- GTM / distribution / business model hypothesis
+- claims integrity
+
+Optional before submit:
+- replace the safe validation wording only if real evidence arrives;
+- add Explorer-confirmed Solana proof only if a transaction actually confirms.
+
+Otherwise the package is ready for final portal audit and submission.
