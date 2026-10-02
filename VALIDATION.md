@@ -2,6 +2,14 @@
 
 Do not convert outreach drafts, sends, likes or polite comments into customer traction.
 
+## User permission rule
+
+No email may be sent without an explicit user instruction to send it.
+
+Do not create any new outreach email draft unless the user explicitly asks for a draft first.
+
+The four existing drafts listed below remain unsent. Do not modify or send them unless the user explicitly asks.
+
 ## Discovery questions
 
 1. When liquidity becomes tight, what information do you need first to decide where to move funds from?
@@ -12,7 +20,7 @@ Do not convert outreach drafts, sends, likes or polite comments into customer tr
 
 ## Outreach pipeline — 2026-10-02
 
-Four validation emails have been **drafted in Gmail but not sent**. They target four different perspectives:
+Four validation emails were previously **drafted in Gmail but not sent**. They target four different perspectives:
 
 - former banking / corporate-banking management;
 - National Bank of Ukraine / financial-stability context;
@@ -21,7 +29,7 @@ Four validation emails have been **drafted in Gmail but not sent**. They target 
 
 Current verified counts:
 
-- Drafts prepared: **4**
+- Existing drafts: **4**
 - Messages sent: **0**
 - Replies received: **0**
 - Prototype testers: **0**
