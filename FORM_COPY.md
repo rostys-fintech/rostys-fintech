@@ -19,10 +19,10 @@ Treasury and liquidity-risk teams at digital-asset institutions such as exchange
 Digital-asset treasuries increasingly manage liquidity across several rails with different execution and settlement times. A single balance view does not capture whether those resources are executable by the required horizon. Liquidity Clock adds that timing layer.
 
 ## Why blockchain / why Solana?
-Solana is an executable liquidity rail in the product, not a decorative data layer. The MVP uses a development Phantom wallet to submit and confirm a real Solana Devnet transaction. The app surfaces the resulting signature, slot and execution timing, then recalculates the synthetic treasury state only after confirmation.
+Solana is a verifiable execution rail in the product, not a decorative data layer. The MVP uses a development Phantom wallet to submit and confirm a real Solana Devnet transaction. The app surfaces the resulting signature, slot and execution timing, then recalculates the synthetic treasury state only after confirmation. The on-chain transfer verifies route execution and settlement timing; institutional treasury amounts in the public demo remain synthetic.
 
 ## What did you build?
-A public-safe single-page treasury stress engine with three synthetic scenarios, deterministic Survival Gap calculations, chronological liquidity-route logic, intervention ranking, responsive animated UI, Phantom connection, Solana Devnet transaction execution, settlement proof and post-confirmation Before-to-After recalculation.
+A public-safe single-page treasury stress engine with synthetic preset scenarios plus a Custom Stress mode, deterministic Survival Gap calculations, chronological liquidity-route logic, intervention ranking, responsive animated UI, Phantom connection, Solana Devnet transaction execution, settlement proof and post-confirmation Before-to-After recalculation.
 
 ## What is unique?
 The product is centered on time-to-executable-liquidity rather than total balances. Its core metric, the Survival Gap, directly compares the treasury's remaining executable-buffer horizon with the arrival time of the next committed liquidity source.
@@ -41,6 +41,9 @@ PENDING. Insert only verified outreach / tester results before submission.
 
 ## Business model
 B2B SaaS. Initial pilots are free for design partners. Paid plans would later combine monitoring, integrations and execution workflows for institutional treasury teams. Pricing remains a hypothesis until validated.
+
+## Why is this more than a feature?
+The stress diagnostic is the entry wedge. The larger system continuously normalizes balances, obligations and execution times across treasury rails, detects binding timing gaps, applies approval / policy constraints, initiates permissible interventions and verifies settlement. That control layer can sit above wallets, exchanges, custodians, tokenized assets and bank rails.
 
 ## Long-term vision
 Turn Liquidity Clock into an executable-liquidity orchestration layer that normalizes time-to-usability across on-chain and off-chain rails and helps treasury teams select, execute and verify the fastest viable route under stress.
