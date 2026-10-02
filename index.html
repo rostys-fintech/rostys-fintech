@@ -11,10 +11,15 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Liquidity Clock — Executable Liquidity Stress Engine" />
   <meta property="og:description" content="Will executable liquidity arrive before your buffer runs out?" />
-  <meta name="twitter:card" content="summary" />
+  <meta property="og:image" content="og-card.png" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Liquidity Clock" />
   <meta name="twitter:description" content="Amount × executability × time." />
+  <meta name="twitter:image" content="og-card.png" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="shortcut icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="manifest" href="site.webmanifest" />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="stylesheet" href="styles.css" />
@@ -34,6 +39,7 @@
         <button data-scenario="safe">Safe</button>
         <button data-scenario="stress" class="active">Timing Stress</button>
         <button data-scenario="rescue">On-chain Rescue</button>
+        <button data-scenario="custom">Custom Stress</button>
       </div>
 
       <div class="chain-pill" id="chainPill">
@@ -49,6 +55,22 @@
         <h1>Will executable liquidity arrive<br class="desktop-break"> before your buffer runs out?</h1>
       </div>
       <div class="synthetic-badge">SYNTHETIC SCENARIO</div>
+    </section>
+
+    <section class="custom-panel card" id="customPanel" hidden>
+      <div class="custom-head">
+        <div><div class="micro-label">CUSTOM STRESS</div><h2>Build your own timing scenario</h2></div>
+        <div class="custom-note">All values are synthetic demo inputs.</div>
+      </div>
+      <div class="custom-grid">
+        <label>Executable liquidity (M LQUSD)<input id="customOperating" type="number" min="0.1" step="0.1" value="1.5"></label>
+        <label>Stress outflow (k / min)<input id="customOutflow" type="number" min="1" step="10" value="150"></label>
+        <label>Next committed amount (M)<input id="customNextAmount" type="number" min="0.1" step="0.1" value="2"></label>
+        <label>Next arrival (min)<input id="customNextEta" type="number" min="1" step="1" value="17"></label>
+        <label>Solana reserve (M)<input id="customReserve" type="number" min="0.1" step="0.1" value="3.15"></label>
+        <label>Reserve ETA (sec)<input id="customReserveEta" type="number" min="1" step="1" value="5"></label>
+      </div>
+      <button id="applyCustomBtn" class="custom-apply">Recalculate scenario</button>
     </section>
 
     <section class="clock-grid reveal delay-2">
