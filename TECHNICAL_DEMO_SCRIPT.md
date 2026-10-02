@@ -18,20 +18,22 @@ Show Operating Wallet, Solana Reserve, scheduled CEX reserve and slower standby 
 
 ## 0:50–1:10 — One-click execution
 
-Click **Run Live Devnet Proof**.
+Click **Run Live Solana Proof**.
 
-> No browser wallet is required. The app creates a temporary Devnet keypair in memory, requests test SOL if needed and signs the proof transaction locally.
+> No browser wallet or mainnet funds are required. The app tries Solana Devnet first and Testnet second, then signs locally and submits when public test funding is available.
 
 Show:
 `Prepare → Sign → Submit → Confirm → Complete`.
 
 ## 1:10–1:35 — Proof
 
-Show `CONFIRMED`, execution time, slot, signature and Explorer.
+For the final submission video, show `CONFIRMED`, execution time, slot, signature and Explorer.
 
-> This is a real Solana Devnet transaction. The test-SOL transfer verifies the execution path and timing. The LQUSD treasury amounts remain clearly synthetic.
+> This is a real Solana test-cluster transaction. The test-SOL transfer verifies the execution path and timing. The LQUSD treasury amounts remain clearly synthetic.
 
-## 1:35–1:55 — Before / After
+If the site is in `SIGNED / NOT BROADCAST` mode during rehearsal, do not present that as the final live proof. The UI should remain at the original treasury state and the button should offer **Retry Live Confirmation**.
+
+## 1:35–1:55 — Confirmed Before / After
 
 > Only after confirmation does the synthetic executable balance move from 1.5 to 4.65 million. Buffer runway moves from ten to thirty-one minutes and the Survival Gap changes from minus seven to plus fourteen.
 
@@ -43,4 +45,4 @@ Optionally switch to Custom Stress and change Reserve ETA.
 
 ## Final rule
 
-The final video must show a real confirmed Devnet transaction with a real Explorer link. Do not use a placeholder or simulated signature.
+The final video must show a real Explorer-confirmed Solana test-cluster transaction. A signed-only fallback is useful for product resilience but does **not** count as on-chain execution proof.
