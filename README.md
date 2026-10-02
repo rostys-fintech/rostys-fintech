@@ -51,7 +51,7 @@ See [`HACKATHON_DISCLOSURE.md`](HACKATHON_DISCLOSURE.md) for the separation betw
 
 ## Public-safety boundary
 
-All institutions, balances, rates, routes and timings in the public MVP are synthetic. The product does not reproduce unpublished R3/JFS case reconstructions, tables, manuscript text or reviewer-sensitive assets.
+All institutions, balances, rates, routes and timings in the public MVP are synthetic. The product does not reproduce unpublished manuscript text, private case reconstructions, restricted datasets, reviewer communications or other submission-sensitive academic materials.
 
 ## License
 
