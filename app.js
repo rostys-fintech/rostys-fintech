@@ -15,7 +15,10 @@ const scenarios={
     {id:'sol',name:'Solana Reserve',amount:3_150_000,etaSeconds:5,state:'AVAILABLE',provenance:'SCENARIO'},
     {id:'cex',name:'CEX Reserve',amount:2_000_000,etaSeconds:17*60,state:'SCHEDULED',provenance:'CONFIGURED'},
     {id:'token',name:'Tokenized Reserve',amount:4_000_000,etaSeconds:30*60,state:'STANDBY',provenance:'CONFIGURED'},
-    {id:'bank',name:'Bank Facility',amount:5_000_000,etaSeconds:45*60,state:'STANDBY',provenance:'CONFIGURED'}]}
+    {id:'bank',name:'Bank Facility',amount:5_000_000,etaSeconds:45*60,state:'STANDBY',provenance:'CONFIGURED'}]},
+  custom:{id:'custom',name:'Custom Treasury — User-defined Stress',operatingLiquidity:1_500_000,outflowRatePerMinute:150_000,bottleneck:'User-defined timing gap',routes:[
+    {id:'sol',name:'Solana Reserve',amount:3_150_000,etaSeconds:5,state:'AVAILABLE',provenance:'SCENARIO'},
+    {id:'cex',name:'Next Committed Route',amount:2_000_000,etaSeconds:17*60,state:'SCHEDULED',provenance:'CONFIGURED'}]}
 };
 
 let currentKey='stress';
@@ -67,6 +70,7 @@ function render(animate=true){
   const recommendation=analysis.recommendation;
 
   $('scenarioName').textContent=s.name;
+  $('customPanel').hidden=currentKey!=='custom';
   if(animate){
     animateText($('bufferClock'),lastValues.buffer,analysis.bufferSeconds,E.fmtSeconds);
     animateText($('nextClock'),lastValues.next,next?.etaSeconds??0,E.fmtSeconds);
@@ -195,6 +199,20 @@ async function fundWallet(){
   $('fundWalletBtn').textContent='Fund Devnet';$('fundWalletBtn').disabled=false;
 }
 
+function applyCustomScenario(){
+  const operating=Math.max(100_000,Number($('customOperating').value||1.5)*1_000_000);
+  const outflow=Math.max(1_000,Number($('customOutflow').value||150)*1_000);
+  const nextAmount=Math.max(100_000,Number($('customNextAmount').value||2)*1_000_000);
+  const nextEta=Math.max(60,Number($('customNextEta').value||17)*60);
+  const reserve=Math.max(100_000,Number($('customReserve').value||3.15)*1_000_000);
+  const reserveEta=Math.max(1,Number($('customReserveEta').value||5));
+  scenarios.custom={id:'custom',name:'Custom Treasury — User-defined Stress',operatingLiquidity:operating,outflowRatePerMinute:outflow,bottleneck:'User-defined timing gap',routes:[
+    {id:'sol',name:'Solana Reserve',amount:reserve,etaSeconds:reserveEta,state:'AVAILABLE',provenance:'SCENARIO'},
+    {id:'cex',name:'Next Committed Route',amount:nextAmount,etaSeconds:nextEta,state:'SCHEDULED',provenance:'CONFIGURED'}]};
+  currentKey='custom';reset();
+}
+
 document.querySelectorAll('[data-scenario]').forEach(btn=>btn.addEventListener('click',()=>{currentKey=btn.dataset.scenario;reset()}));
+$('applyCustomBtn').addEventListener('click',applyCustomScenario);
 $('executeBtn').addEventListener('click',execute);$('connectWalletBtn').addEventListener('click',connectWallet);$('fundWalletBtn').addEventListener('click',fundWallet);
 reset();updateWalletState();
