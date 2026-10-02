@@ -1,0 +1,133 @@
+# Liquidity Clock — Final Submission Dry Run
+
+Date: 2026-10-02
+
+## Current readiness
+
+### PASS
+
+- Product name: Liquidity Clock
+- Tagline
+- Product description
+- Founder background
+- Team/location
+- Problem statement
+- Primary user
+- Market positioning
+- Business model hypothesis
+- GTM strategy
+- Distribution plan
+- GitHub repository
+- Public-safe product build
+- Custom Stress mode
+- Deterministic engine
+- Solana Devnet adapter code
+- Wallet / faucet / execution UI
+- Favicon / app metadata
+- Pitch script
+- Technical demo script
+- Recording plan
+- Pre-existing work disclosure
+- Claims firewall
+
+### PENDING REAL EVIDENCE
+
+1. Real Phantom-signed Devnet transaction
+2. Confirmed signature / slot / Explorer URL
+3. Validation replies / tester feedback
+4. Permanent live product URL
+5. Final pitch video URL
+6. Final technical demo video URL
+
+## Form copy source
+
+Use `FORM_COPY.md` as the copy/paste source.
+
+Do not replace PENDING fields with assumptions.
+
+## Product graphic
+
+Use the locked Liquidity Clock hero visual / clean screenshot showing:
+
+- Buffer Clock
+- Survival Gap
+- Next Liquidity
+
+Avoid screenshots dominated by disclosure text or setup controls.
+
+## Pitch video
+
+Use `PITCH_SCRIPT.md`.
+
+Target: ~2:15.
+
+Must include:
+
+- founder background;
+- problem;
+- target user;
+- product insight;
+- Survival Gap;
+- Solana execution role;
+- market wedge;
+- long-term vision;
+- one validation sentence only if supported by real responses.
+
+## Technical demo
+
+Use `TECHNICAL_DEMO_SCRIPT.md`.
+
+Target: ~2:20.
+
+Must visibly show:
+
+- initial -07:00 state;
+- route logic;
+- recommendation;
+- Devnet RPC status;
+- Phantom;
+- real transaction approval;
+- Confirmed status;
+- slot;
+- signature;
+- Explorer;
+- -07:00 to +14:00 recalculation.
+
+## Validation rule
+
+Do not count drafts as outreach and do not count outreach as validation.
+
+Only report:
+
+- messages actually sent;
+- replies actually received;
+- demo testers who actually viewed the product;
+- recurring themes supported by responses;
+- quotes only with permission.
+
+## Live URL gate
+
+A permanent public HTTPS URL is preferred for submission.
+
+Before inserting it into the form, verify:
+
+- page loads without auth;
+- scripts/assets load;
+- mobile layout works;
+- scenario buttons work;
+- Custom Stress recalculates;
+- Phantom detection works in supported browser;
+- no console-breaking errors;
+- favicon appears;
+- no private material is exposed.
+
+## Final submit gate
+
+Submit only when all required fields are complete and the links are publicly accessible to judges.
+
+Final status must be one of:
+
+- `READY TO SUBMIT`
+- `HOLD — missing real evidence`
+
+Current status: `HOLD — missing real evidence`.
