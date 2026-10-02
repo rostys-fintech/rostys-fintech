@@ -15,34 +15,38 @@ Status: PRODUCT BUILD PASS / SUBMISSION EVIDENCE HOLD
 - No visually clickable dead controls in the current interaction architecture.
 - No Phantom requirement.
 - No mainnet-fund requirement.
-- One-click Solana proof flow.
+- Main user action simplified to **Run Liquidity Rescue**.
+- Main demo no longer blocks on Devnet/Testnet faucet availability.
+- Animated user-visible progress: `Analyze → Prepare → Apply → Recalculate → Complete`.
+- Loading spinner / pulse states added for rescue execution, network checks, verifier state and Custom Stress recalculation.
+- Live Solana verification runs in the background.
 - Devnet first, Testnet fallback.
-- Explicit proof-state separation:
-  - `LIVE CONFIRMED`
-  - `SIGNED / NOT BROADCAST`
-- Signed-only fallback shows no slot / Explorer and does not mutate treasury state.
-- Only confirmed proof can mark Solana Reserve `Deployed` and change `1.50M / 10:00 / -07:00` to `4.65M / 31:00 / +14:00`.
-- Retry Live Confirmation path after signed-only fallback.
-- `index.html` and `live.html` synchronized.
-- README / Architecture / Demo / Pitch / Technical Demo / Shot List / Recording Plan / Submission Copy / Submission Gate / Validation log synchronized with current architecture.
+- Explicit result separation:
+  - `SIMULATED OUTCOME` — deterministic synthetic rescue result;
+  - `LIVE VERIFIED` — real Solana test-cluster confirmation with slot / signature / Explorer;
+  - `DEMO COMPLETE · LIVE VERIFICATION PENDING` — product demo succeeded, but no chain confirmation is claimed.
+- A simulated route is labelled **Simulated**, never `Deployed` or `Verified`.
+- Only a genuinely confirmed transaction upgrades the route to **Verified** and exposes Explorer evidence.
+- Public test-funding failure never blocks the normal product demo.
+- `index.html` and `live.html` remain compatible with the current app architecture.
 
 ## Static QA — PASS
 
 - `engine.js` syntax: PASS.
-- `app.js` syntax: PASS.
-- `solana-adapter.js` syntax: PASS.
-- Missing DOM references from app to HTML: 0.
+- new `app.js` syntax: PASS (`node --check`).
+- `solana-adapter.js` syntax: PASS from prior gate.
+- No new DOM IDs were introduced by the simplified flow.
 - Custom input defaults valid.
 - Golden deterministic result: `-07:00`, recommended Solana Reserve, projected `+14:00`.
 - ETA edge: 599 sec sufficient; 601 sec insufficient.
 
 ## Claim integrity — PASS
 
-Safe claim:
+Safe product claim:
 
-> Liquidity Clock uses a real Solana test-cluster transaction as execution / settlement-path proof when a transaction is actually confirmed. Treasury amounts remain synthetic public-safe notional.
+> Liquidity Clock always demonstrates the synthetic stress decision flow. Separately, it attempts a real Solana test-cluster verification in the background. Only a genuinely confirmed chain transaction is labelled live verified.
 
-Signed-only fallback is never described as on-chain confirmation.
+The synthetic `3.15M LQUSD` scenario is never represented as a real 3.15M-value on-chain asset movement.
 
 ## Email / outreach rule — LOCKED
 
@@ -54,7 +58,7 @@ Signed-only fallback is never described as on-chain confirmation.
 
 ### RED
 
-1. Explorer-confirmed Solana test-cluster transaction captured.
+1. Explorer-confirmed Solana test-cluster transaction captured for the final technical proof.
 2. Real validation / prototype feedback recorded.
 
 ### YELLOW
