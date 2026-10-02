@@ -13,6 +13,18 @@
   function web3(){return global.solanaWeb3||global.SolanaWeb3||null}
   function bytesToBase64(bytes){let s='';for(const b of bytes)s+=String.fromCharCode(b);return btoa(s)}
   function base64ToBytes(value){const s=atob(value);const out=new Uint8Array(s.length);for(let i=0;i<s.length;i++)out[i]=s.charCodeAt(i);return out}
+  function toBase58(bytes){
+    const alphabet='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+    if(!bytes||!bytes.length)return'';
+    const digits=[0];
+    for(const byte of bytes){
+      let carry=byte;
+      for(let j=0;j<digits.length;j++){carry+=digits[j]<<8;digits[j]=carry%58;carry=(carry/58)|0}
+      while(carry){digits.push(carry%58);carry=(carry/58)|0}
+    }
+    let zeros=0;while(zeros<bytes.length&&bytes[zeros]===0)zeros++;
+    let out='1'.repeat(zeros);for(let i=digits.length-1;i>=0;i--)out+=alphabet[digits[i]];return out;
+  }
   function loadOrCreateWallet(w3){
     if(demoWallet)return demoWallet;
     try{
@@ -31,10 +43,9 @@
     return w3;
   }
   function connectionFor(clusterId){
-    const w3=ensureCore();
-    const c=CLUSTERS[clusterId];
-    if(!c)throw new Error(`Unknown Solana cluster: ${clusterId}`);
-    if(!connections[clusterId])connections[clusterId]=new w3.Connection(c.rpc,'confirmed');
+    const w3=ensureCore(),meta=CLUSTERS[clusterId];
+    if(!meta)throw new Error(`Unknown Solana cluster: ${clusterId}`);
+    if(!connections[clusterId])connections[clusterId]=new w3.Connection(meta.rpc,'confirmed');
     return connections[clusterId];
   }
   function isRateLimit(error){
@@ -78,13 +89,14 @@
       try{await tryAirdrop(id,onPhase);const bal=await balanceLamports(id);if(bal>=MIN_REQUIRED_LAMPORTS){activeCluster=id;return{id,balance:bal}}}
       catch(error){failures.push({cluster:id,rateLimited:isRateLimit(error),message:String(error?.message||error)})}
     }
-    const e=new Error('Automatic Solana test funding is unavailable on both Devnet and Testnet right now. The same demo address has been kept for a one-time external test-SOL top-up.');
+    const e=new Error('Public Solana test funding is currently unavailable on both Devnet and Testnet.');
     e.code='ALL_FAUCETS_UNAVAILABLE';e.wallet=demoWallet.publicKey.toString();e.failures=failures;throw e;
   }
   async function checkNetwork(){
     ensureCore();
+    const seen=new Set();
     for(const id of [activeCluster,'devnet','testnet']){
-      if(!CLUSTERS[id])continue;
+      if(!CLUSTERS[id]||seen.has(id))continue;seen.add(id);
       try{
         const c=connectionFor(id),started=performance.now();
         const health=await Promise.race([c.getLatestBlockhash('confirmed'),new Promise((_,reject)=>setTimeout(()=>reject(new Error('RPC timeout')),6500))]);
@@ -103,16 +115,27 @@
       return{available:true,connected:true,mode:'PERSISTENT_SOLANA_TEST_WALLET',wallet:demoWallet.publicKey.toString(),balanceSol:Math.max(0,best.balance)/w3.LAMPORTS_PER_SOL,recipient:recipient.publicKey.toString(),cluster:activeCluster,network:CLUSTERS[activeCluster].name,persisted,requiredSol:MIN_REQUIRED_LAMPORTS/w3.LAMPORTS_PER_SOL};
     }catch(error){return{available:false,connected:false,error:String(error),network:'Solana test clusters',persisted}}
   }
+  async function makeSignedFallback(amount,onPhase,failures=[]){
+    const w3=ensureCore(),health=await checkNetwork();
+    if(!health.ok){const e=new Error('Solana Devnet/Testnet RPC is temporarily unreachable, so even a network-bound signed fallback cannot be created.');e.code='RPC_UNAVAILABLE';throw e}
+    const clusterId=health.cluster,c=connectionFor(clusterId),meta=CLUSTERS[clusterId],latest=await c.getLatestBlockhash('confirmed');
+    const tx=new w3.Transaction().add(w3.SystemProgram.transfer({fromPubkey:demoWallet.publicKey,toPubkey:recipient.publicKey,lamports:PROOF_LAMPORTS}));
+    tx.recentBlockhash=latest.blockhash;tx.feePayer=demoWallet.publicKey;
+    const started=performance.now();onPhase?.('signFallback',{cluster:clusterId,network:meta.name});tx.sign(demoWallet);
+    const signature=toBase58(tx.signature||tx.signatures?.[0]?.signature||new Uint8Array());
+    const serialized=bytesToBase64(tx.serialize({requireAllSignatures:true,verifySignatures:true}));
+    const ended=performance.now();activeCluster=clusterId;onPhase?.('fallbackSigned',{cluster:clusterId,network:meta.name});
+    return{ok:true,isRealChain:false,proofMode:'SIGNED_NOT_BROADCAST',cluster:clusterId,network:meta.name,signerMode:'PERSISTENT_BROWSER_TEST_WALLET',persisted,amount,proofTransferSol:PROOF_LAMPORTS/w3.LAMPORTS_PER_SOL,executionSeconds:(ended-started)/1000,networkSeconds:null,signature,slot:null,confirmationStatus:'signed-not-broadcast',wallet:demoWallet.publicKey.toString(),recipient:recipient.publicKey.toString(),walletBalanceSol:0,explorer:null,serializedTransaction:serialized,failures,note:`A fresh ${meta.name}-bound transaction was signed locally but not broadcast because public test funding was unavailable. The LQUSD scenario remains synthetic.`};
+  }
   async function execute({amount,onPhase}={}){
-    const w3=ensureCore();
-    onPhase?.('prepare',{network:CLUSTERS[activeCluster].name,cluster:activeCluster});
-    const selected=await chooseExecutionCluster(onPhase),clusterId=selected.id,c=connectionFor(clusterId),meta=CLUSTERS[clusterId];
-    const balance=await c.getBalance(demoWallet.publicKey,'confirmed');
-    if(balance<MIN_REQUIRED_LAMPORTS){const e=new Error(`${meta.name} demo wallet still needs test SOL.`);e.code='NEEDS_TEST_SOL';e.wallet=demoWallet.publicKey.toString();throw e}
+    const w3=ensureCore();onPhase?.('prepare',{network:CLUSTERS[activeCluster].name,cluster:activeCluster});
+    let selected;
+    try{selected=await chooseExecutionCluster(onPhase)}catch(error){if(error?.code==='ALL_FAUCETS_UNAVAILABLE')return makeSignedFallback(amount,onPhase,error.failures||[]);throw error}
+    const clusterId=selected.id,c=connectionFor(clusterId),meta=CLUSTERS[clusterId],balance=await c.getBalance(demoWallet.publicKey,'confirmed');
+    if(balance<MIN_REQUIRED_LAMPORTS)return makeSignedFallback(amount,onPhase,[{cluster:clusterId,message:'Balance below live-proof threshold after funding attempt.'}]);
     const tx=new w3.Transaction().add(w3.SystemProgram.transfer({fromPubkey:demoWallet.publicKey,toPubkey:recipient.publicKey,lamports:PROOF_LAMPORTS}));
     const latest=await c.getLatestBlockhash('confirmed');tx.recentBlockhash=latest.blockhash;tx.feePayer=demoWallet.publicKey;
-    const totalStart=performance.now();
-    onPhase?.('sign',{cluster:clusterId,network:meta.name});tx.sign(demoWallet);
+    const totalStart=performance.now();onPhase?.('sign',{cluster:clusterId,network:meta.name});tx.sign(demoWallet);
     onPhase?.('submit',{cluster:clusterId,network:meta.name});const sendStart=performance.now();
     const signature=await c.sendRawTransaction(tx.serialize(),{skipPreflight:false,maxRetries:3,preflightCommitment:'confirmed'});
     onPhase?.('confirm',{cluster:clusterId,network:meta.name});
@@ -120,7 +143,7 @@
     const confirmedAt=performance.now(),status=await c.getSignatureStatus(signature,{searchTransactionHistory:true});let txInfo=null;
     for(let i=0;i<8&&!txInfo;i++){txInfo=await c.getTransaction(signature,{commitment:'confirmed',maxSupportedTransactionVersion:0});if(!txInfo)await new Promise(r=>setTimeout(r,450))}
     const postBalance=await c.getBalance(demoWallet.publicKey,'confirmed');onPhase?.('complete',{cluster:clusterId,network:meta.name});
-    return{ok:true,isRealChain:true,cluster:clusterId,network:meta.name,signerMode:'PERSISTENT_BROWSER_TEST_WALLET',persisted,amount,proofTransferSol:PROOF_LAMPORTS/w3.LAMPORTS_PER_SOL,executionSeconds:(confirmedAt-totalStart)/1000,networkSeconds:(confirmedAt-sendStart)/1000,signature,slot:txInfo?.slot||status?.value?.slot||null,confirmationStatus:status?.value?.confirmationStatus||'confirmed',wallet:demoWallet.publicKey.toString(),recipient:recipient.publicKey.toString(),walletBalanceSol:postBalance/w3.LAMPORTS_PER_SOL,explorer:`https://explorer.solana.com/tx/${signature}?cluster=${meta.explorer}`,note:`A browser-stored test-only keypair signs the real ${meta.name} test-SOL proof. Scenario LQUSD amounts remain synthetic notional.`};
+    return{ok:true,isRealChain:true,proofMode:'LIVE_CONFIRMED',cluster:clusterId,network:meta.name,signerMode:'PERSISTENT_BROWSER_TEST_WALLET',persisted,amount,proofTransferSol:PROOF_LAMPORTS/w3.LAMPORTS_PER_SOL,executionSeconds:(confirmedAt-totalStart)/1000,networkSeconds:(confirmedAt-sendStart)/1000,signature,slot:txInfo?.slot||status?.value?.slot||null,confirmationStatus:status?.value?.confirmationStatus||'confirmed',wallet:demoWallet.publicKey.toString(),recipient:recipient.publicKey.toString(),walletBalanceSol:postBalance/w3.LAMPORTS_PER_SOL,explorer:`https://explorer.solana.com/tx/${signature}?cluster=${meta.explorer}`,note:`A browser-stored test-only keypair signs the real ${meta.name} test-SOL proof. Scenario LQUSD amounts remain synthetic notional.`};
   }
-  global.SolanaAdapter={mode:'SELF_CONTAINED_SOLANA_TEST_CLUSTER_PROOF',getState,execute,checkNetwork,proofLamports:PROOF_LAMPORTS};
+  global.SolanaAdapter={mode:'RESILIENT_SOLANA_TEST_PROOF',getState,execute,checkNetwork,proofLamports:PROOF_LAMPORTS};
 })(window);
