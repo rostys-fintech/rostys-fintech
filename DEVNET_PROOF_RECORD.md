@@ -1,6 +1,6 @@
 # Liquidity Clock — Devnet Proof Record
 
-Status: PENDING REAL PHANTOM-SIGNED TRANSACTION
+Status: PENDING FIRST REAL SELF-CONTAINED DEVNET TRANSACTION
 
 Fill only from the actual confirmed transaction shown by the app / Solana Explorer.
 
@@ -8,6 +8,7 @@ Fill only from the actual confirmed transaction shown by the app / Solana Explor
 
 - Date/time: PENDING
 - Network: Solana Devnet
+- Signer mode: ephemeral in-memory browser keypair
 - Source wallet (shortened): PENDING
 - Proof transfer: 0.00315 test SOL
 - Confirmation status: PENDING
@@ -31,6 +32,8 @@ Synthetic scenario only:
 ## Claim boundary
 
 The Devnet transaction is real execution / settlement proof using test SOL.
+
+The signing key is generated in browser memory for the demo and is not persisted by the app.
 
 The 3.15M LQUSD scenario amount is synthetic public-safe notional and is not represented as a real-valued on-chain asset movement.
 
