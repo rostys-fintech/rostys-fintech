@@ -8,8 +8,42 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
+RAW_BASE="https://raw.githubusercontent.com/rostys-fintech/rostys-fintech/liquidity-clock"
+CORE_FILES=(index.html styles.css custom.css engine.js solana-adapter.js app.js)
+OPTIONAL_FILES=(favicon.svg site.webmanifest favicon-32.png favicon.ico apple-touch-icon.png og-card.png)
+
+echo "Syncing latest Liquidity Clock build from GitHub..."
+SYNC_OK=1
+for f in "${CORE_FILES[@]}"; do
+  tmp=".${f}.tmp"
+  if curl -fL --connect-timeout 8 --max-time 20 -sS "$RAW_BASE/$f" -o "$tmp"; then
+    mv "$tmp" "$f"
+    echo "  updated $f"
+  else
+    rm -f "$tmp"
+    echo "  WARNING: could not update $f"
+    SYNC_OK=0
+  fi
+done
+for f in "${OPTIONAL_FILES[@]}"; do
+  tmp=".${f}.tmp"
+  if curl -fL --connect-timeout 8 --max-time 20 -sS "$RAW_BASE/$f" -o "$tmp"; then
+    mv "$tmp" "$f"
+  else
+    rm -f "$tmp"
+  fi
+done
+
+if [ "$SYNC_OK" -eq 1 ]; then
+  echo "Latest build synced."
+else
+  echo "Continuing with available local files. If the UI looks old, check internet access and rerun."
+fi
+
 PORT=8080
-URL="http://127.0.0.1:$PORT/index.html"
+STAMP=$(date +%s)
+URL="http://127.0.0.1:$PORT/index.html?v=$STAMP"
+BASE_URL="http://127.0.0.1:$PORT/index.html"
 
 open_url(){
   if open -Ra "Google Chrome" >/dev/null 2>&1; then
@@ -20,13 +54,13 @@ open_url(){
 }
 
 if lsof -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; then
-  if curl -fsS "$URL" 2>/dev/null | grep -q "LIQUIDITY"; then
-    echo "Liquidity Clock is already running on port $PORT."
+  if curl -fsS "$BASE_URL" 2>/dev/null | grep -q "LIQUIDITY"; then
+    echo "Liquidity Clock is already running on port $PORT. Opening the refreshed build."
     open_url
     exit 0
   fi
   echo "Port $PORT is already used by another app."
-  echo "Close that app/process and run this launcher again so Liquidity Clock keeps the same browser origin and Devnet demo address."
+  echo "Close that app/process and run this launcher again."
   read -r -p "Press Enter to close..."
   exit 1
 fi
@@ -42,10 +76,11 @@ open_url
 
 echo ""
 echo "Liquidity Clock is running:"
-echo "$URL"
+echo "$BASE_URL"
 echo ""
 echo "Flow: Timing Stress -> Run Live Devnet Proof."
-echo "If the public Devnet faucet is rate-limited, use the in-app funding fallback once; the same demo address is kept in this browser."
+echo "If automatic Devnet funding is rate-limited, the page will show Copy demo address + faucet links."
+echo "The same demo wallet is kept for this localhost origin, so one manual top-up can be reused."
 echo "Keep this Terminal window open while testing."
 echo "Press Ctrl+C when finished."
 echo ""
