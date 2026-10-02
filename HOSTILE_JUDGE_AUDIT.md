@@ -7,7 +7,7 @@ Mode: internal pre-submission audit
 
 Current state: **PROMISING / NOT YET SUBMIT-READY**.
 
-The product has a memorable insight, clear visual mechanic and credible founder-origin story. The remaining risks are not design problems; they are evidence problems: live chain proof, external validation, and proving that Liquidity Clock can become a company rather than remain a narrow dashboard feature.
+The product has a memorable insight, clear visual mechanic and credible founder-origin story. The remaining risks are evidence problems: Explorer-confirmed chain proof, external validation, permanent hosting, and proving that Liquidity Clock can become a company rather than remain a narrow dashboard feature.
 
 ## 1. Founder–market fit — PASS / YELLOW
 
@@ -23,9 +23,6 @@ The founder does not yet have direct professional digital-asset treasury operati
 ### Response
 Do not hide this. Use banking/liquidity domain depth as the origin, and use real crypto-treasury discovery conversations to test the transferability of the problem.
 
-### Required before submit
-At least several relevant conversations, including digital-asset / treasury / operations respondents.
-
 ## 2. Insight / novelty — PASS
 
 The strongest insight is:
@@ -38,7 +35,7 @@ The two-clock interface and Survival Gap make this immediately legible.
 "Is this just runway math?"
 
 ### Response
-The product must show chronological route walking, first-binding-gap detection, intervention sufficiency testing and post-execution recalculation. The new Custom Stress mode helps prove that the engine generalizes beyond one hard-coded scenario.
+The product shows chronological route walking, first-binding-gap detection, intervention sufficiency testing, binding Reserve ETA and post-confirmation recalculation. Custom Stress helps prove that the engine generalizes beyond one hard-coded scenario.
 
 ## 3. Product / functionality — PASS / YELLOW
 
@@ -47,45 +44,58 @@ The product must show chronological route walking, first-binding-gap detection, 
 - multiple scenarios;
 - Custom Stress mode;
 - intervention recommendation;
-- real wallet / Devnet execution adapter;
-- animated before/after state;
-- responsive UI.
+- one-click Solana Devnet → Testnet proof flow;
+- explicit live-confirmed vs signed-only proof states;
+- animated UI;
+- responsive design.
 
 ### Judge objection
 The public MVP still relies on synthetic treasury data and does not yet connect to real institutional data sources.
 
 ### Response
-Correctly frame this as a public-safe stress prototype. The next product step is connectors + historical execution calibration, not more dashboard features.
+Frame this as a public-safe stress prototype. The next product step is connectors + historical execution calibration, not more dashboard features.
 
 ## 4. Blockchain / Solana necessity — YELLOW
 
 ### Strength
-Solana is used for a real signed / submitted / confirmed execution proof, with signature, slot and Explorer verification.
+Solana is used as a verifiable execution rail. When a public test-cluster transaction confirms, the app surfaces signature, slot, timing and Explorer verification.
 
 ### Main weakness
-The current 0.00315 Devnet SOL proof transaction is not economically identical to the synthetic 3.15M LQUSD intervention. A hostile judge can call this a verification proxy rather than a real liquidity movement.
+The tiny test-SOL proof transaction is not economically identical to the synthetic 3.15M LQUSD intervention. A hostile judge can correctly call this an execution / settlement-path proxy rather than a real 3.15M liquidity movement.
 
 ### Required wording
 Say:
 
-> The current public MVP uses a real Solana Devnet transaction to verify execution and settlement timing for the selected route. Treasury amounts remain synthetic public-safe scenario notional.
+> The current public MVP uses a real Solana test-cluster transaction to verify execution and settlement timing for the selected route. Treasury amounts remain synthetic public-safe scenario notional.
 
 Do **not** say:
 
 > We moved 3.15M of real liquidity on Solana.
 
+### Integrity improvement already implemented
+If public test funding is unavailable, the app may return `SIGNED / NOT BROADCAST`. That state:
+
+- has no slot;
+- has no Explorer link;
+- does not mark the route Deployed;
+- does not move the treasury from -07:00 to +14:00;
+- is not counted as on-chain proof.
+
+This is substantially safer than showing a fake success state.
+
 ### Upgrade path
-A later version should execute a real Devnet SPL-token treasury asset or connect to an existing tokenized reserve, so the on-chain amount itself is the modeled liquidity leg.
+A later version should execute a real testnet SPL-token treasury asset or connect to an existing tokenized reserve, so the on-chain amount itself is the modeled liquidity leg.
 
 ## 5. UX / communication — PASS
 
 ### Strength
 - understandable in under 10 seconds;
 - one memorable metric;
-- red-to-green demo transition;
+- restrained red-to-green transition;
 - low text density;
 - dedicated icon / favicon;
-- mobile responsive.
+- mobile responsive;
+- no mandatory wallet-install or manual faucet workflow.
 
 ### Risk
 Do not clutter the final demo with implementation details before the judge understands the -7 minute problem.
@@ -134,6 +144,8 @@ Required:
 
 Likes and generic compliments do not count.
 
+No outreach email may be sent and no new outreach draft may be created without explicit user permission.
+
 ## 10. Product velocity / hackathon work — PASS
 
 Public repo chronology shows substantial productization work during the hackathon: deterministic engine, scenarios, UI, Solana adapter, public-safety disclosure, validation framework, submission package and video plan.
@@ -144,18 +156,19 @@ Keep the pre-existing-research disclosure clear and narrow.
 
 ### RED
 - real user validation not yet recorded;
-- real final Devnet execution proof not yet completed by the founder's development wallet.
+- Explorer-confirmed Solana test-cluster proof not yet captured.
 
 ### YELLOW
-- live production URL still pending;
+- permanent live production URL still pending;
 - pitch and demo videos pending final recording;
-- current on-chain transaction is an execution-timing proxy rather than the synthetic notional asset itself.
+- on-chain transaction is an execution-timing proxy rather than the synthetic notional asset itself.
 
 ### GREEN
 - core product insight;
 - deterministic engine;
 - Custom Stress mode;
 - UI / animation;
+- proof-state integrity;
 - public-safety separation;
 - GitHub build history;
 - submission copy architecture.
@@ -167,6 +180,6 @@ A judge should be able to answer these six questions after the first 60 seconds:
 1. Who has the problem? — digital-asset treasury teams.
 2. What is the problem? — liquidity can exist but arrive too late.
 3. What is new? — stress decisions around time-to-executable-liquidity / Survival Gap.
-4. What works today? — deterministic stress engine + custom scenarios + Devnet execution proof workflow.
+4. What works today? — deterministic stress engine + custom scenarios + resilient Solana test-cluster proof workflow.
 5. Why can this become a company? — normalized control / execution layer across treasury rails.
 6. What evidence exists? — must be strengthened with real user conversations before submission.
