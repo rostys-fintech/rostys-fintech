@@ -42,6 +42,6 @@
     return{binding:false,route:target,exhaustionSeconds:target.etaSeconds+marginSeconds,gapSeconds:marginSeconds,interventionApplied};
   }
   function assessInterventions(scenario){return scenario.routes.filter(r=>r.state==='AVAILABLE').map(route=>{const post=evaluateIntervention(scenario,route);return{...route,post,sufficient:post.interventionApplied&&!post.binding,effectSeconds:post.gapSeconds}}).sort((a,b)=>a.sufficient!==b.sufficient?(a.sufficient?-1:1):a.etaSeconds!==b.etaSeconds?a.etaSeconds-b.etaSeconds:a.amount-b.amount)}
-  function analyze(scenario){const base=firstBindingGap(scenario);const interventions=assessInterventions(scenario);const recommendation=interventions.find(x=>x.sufficient)||interventions[0]||null;const nominal=scenario.operatingLiquidity+scenario.routes.reduce((a,r)=>a+r.amount,0);return{base,interventions,recommendation,nominal,bufferSeconds:runwaySeconds(scenario.operatingLiquidity,scenario.outflowRatePerMinute)}}
+  function analyze(scenario){const base=firstBindingGap(scenario);const interventions=assessInterventions(scenario);const recommendation=interventions.find(x=>x.sufficient)||null;const nominal=scenario.operatingLiquidity+scenario.routes.reduce((a,r)=>a+r.amount,0);return{base,interventions,recommendation,nominal,bufferSeconds:runwaySeconds(scenario.operatingLiquidity,scenario.outflowRatePerMinute)}}
   global.LiquidityEngine={fmtSeconds,fmtM,runwaySeconds,firstBindingGap,evaluateIntervention,assessInterventions,analyze};
 })(window);
