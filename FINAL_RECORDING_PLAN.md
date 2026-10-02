@@ -2,90 +2,95 @@
 
 ## Goal
 
-Record two clean submission videos after the first Explorer-confirmed Solana test-cluster proof is available.
+Record two clean submission videos from the permanent public build without depending on public Solana faucet availability.
+
+Permanent URL:
+
+`https://rostys-fintech.github.io/rostys-fintech/`
 
 ## Video A — Pitch
 
-Target: 2:10–2:25.
+Target: **2:05–2:20**.
 
 Use `PITCH_SCRIPT.md`.
 
-Visual sequence:
+Recommended visual sequence:
 
-1. Hero screen.
-2. Two clocks + Survival Gap.
+1. Hero / title.
+2. Three clocks and Survival Gap.
 3. Route table and recommendation.
-4. Solana proof section.
-5. Founder / market wedge.
-6. Clean hero close.
+4. Run Liquidity Rescue animation and result.
+5. Execution & Verification section.
+6. Clean product close.
+
+Face-cam is optional. A clean screen recording with your natural voice is sufficient and may look more professional than forcing a webcam layout.
 
 ## Video B — Technical Demo
 
-Target: 1:50–2:15.
+Target: **1:35–1:55**.
 
 Use `TECHNICAL_DEMO_SCRIPT.md`.
 
-Pre-recording setup:
+### Pre-recording setup
 
-- Timing Stress selected.
-- No old proof values on-screen.
-- Browser zoom adjusted so hero + action card are clear.
-- Close unrelated tabs and notifications.
-- Internet connection available.
-- Test the button once before the final take. If the result is only `SIGNED / NOT BROADCAST`, wait and retry later; do not record that as the final chain proof.
+- Open only `https://rostys-fintech.github.io/rostys-fintech/`.
+- Select **Timing Stress**.
+- Refresh once so the scenario begins in the initial state.
+- Browser zoom: 90–100%.
+- Hide unrelated tabs/bookmarks if they contain personal information.
+- Disable desktop/browser notifications.
+- Do not open wallet extensions, email, private research files or developer tools.
+- Test the full rescue once before the final take, then refresh back to the initial state.
 
-Recording sequence:
+### Recording sequence
 
-1. Show `-07:00` initial Survival Gap.
-2. Show route table and highlighted Solana Reserve.
-3. Show recommendation.
-4. Click the Solana cluster pill to refresh RPC status.
-5. Click **Run Live Solana Proof** once.
-6. Capture `Prepare → Sign → Submit → Confirm → Complete`.
-7. Hold on `CONFIRMED`.
-8. Show execution time, slot and signature.
-9. Open `View on Explorer` briefly.
-10. Return and show `-07:00 → +14:00`, `1.50M → 4.65M`, `10:00 → 31:00`.
-11. Optional: Custom Stress if still under 3 minutes.
+1. Show `10:00 / -07:00 / 17:00`.
+2. Scroll to Liquidity routes.
+3. Pause on Solana Reserve and Recommended Action.
+4. Click **Run Liquidity Rescue** once.
+5. Do not move the cursor while the loading animation is running.
+6. Show the completed synthetic result:
+   - `1.50M → 4.65M`
+   - `10:00 → 31:00`
+   - `-07:00 → +14:00`
+7. Scroll to Execution & Verification.
+8. If Solana is live-confirmed, show signature / slot / Explorer briefly.
+9. If Solana verification is pending, leave the honest pending state visible for 2–3 seconds and continue. Do not retry during the take.
+10. Switch to **Custom Stress**.
+11. Change Reserve ETA to a value after buffer exhaustion and recalculate.
+12. Show that the route is no longer recommended.
+13. End recording.
 
-## Signed-only contingency
+## Solana proof rule
 
-If public test funding is unavailable on both Devnet and Testnet, the app may return `SIGNED / NOT BROADCAST`.
+The product demo and the Solana verification layer are intentionally separated.
 
-That mode is a resilience fallback only:
+- The treasury rescue outcome is a **synthetic public-safe simulation**.
+- A Solana transaction is **live verification only when actually confirmed on-chain**.
+- If public test funding is unavailable, the demo remains complete while verification is labelled pending.
+- Never imply that 3.15M LQUSD was transferred on-chain.
 
-- no manual faucet step is required;
-- no mainnet funds are required;
-- no slot or Explorer is shown;
-- the treasury state remains unchanged;
-- use **Retry Live Confirmation** later.
+An Explorer-confirmed test-cluster transaction is valuable evidence, but it is no longer a prerequisite for recording a coherent product demo.
 
-Do not use signed-only mode as the final on-chain proof in the submission video.
+## Recording quality gate
 
-## Privacy gate
-
-The demo uses only a dedicated test-only browser signer. Do not display or export private key material. Never show personal browser tabs/messages or private academic/reviewer materials.
-
-## Proof capture
-
-After the real confirmed transaction, save in `DEVNET_PROOF_RECORD.md`:
-
-- date/time;
-- actual cluster used (Devnet or Testnet);
-- proof transfer amount in test SOL;
-- execution time;
-- slot;
-- full signature;
-- Explorer URL;
-- screenshot filenames.
-
-## Final video gate
-
-PASS only if:
+PASS if:
 
 - pitch < 3:00;
-- demo < 3:00;
-- no fake/mocked proof;
-- real Explorer-verifiable transaction shown;
-- synthetic notional vs real test-SOL proof is explicit;
-- product value is understandable without reading the repository.
+- technical demo < 3:00;
+- voice is clear and natural;
+- no personal/private content is visible;
+- all button labels in narration match the live UI;
+- loading animations are visible rather than looking frozen;
+- synthetic outcome and live verification are clearly separated;
+- no unverified chain claim is made;
+- product value is understandable without reading GitHub.
+
+## After recording
+
+Keep two final files:
+
+- `liquidity-clock-pitch.mp4`
+- `liquidity-clock-demo.mp4`
+
+After the files are ready, add their public video URLs to `FORM_COPY.md` and `SUBMISSION_PACKAGE.md`, then run the final submission-form audit.
