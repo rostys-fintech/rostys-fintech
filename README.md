@@ -22,28 +22,39 @@ A negative gap means the treasury exhausts its executable buffer before the next
 
 ## One-click real Solana Devnet proof
 
-The public MVP no longer requires Phantom or a user wallet.
+The public MVP does not require Phantom or a user wallet.
 
 When **Run Live Devnet Proof** is pressed, the browser:
 
-1. creates a temporary Solana keypair **in memory only**;
-2. checks its Devnet balance;
-3. requests a small amount of test SOL from the Devnet faucet if needed;
-4. signs a real **0.00315 Devnet SOL** transfer locally in browser memory;
+1. loads or creates a **Devnet-only demo keypair** stored in this browser;
+2. checks its current Devnet balance;
+3. requests test SOL automatically if the public Devnet faucet is available;
+4. signs a real **0.0000315 Devnet SOL** transfer locally;
 5. submits it to `https://api.devnet.solana.com`;
 6. waits for network confirmation;
 7. surfaces the real transaction signature, slot, timing and Explorer link;
 8. only then applies the synthetic intervention to the Liquidity Clock scenario.
 
-The temporary private key is not displayed, exported or persisted by the app. Reloading the page creates a new demo wallet.
+The demo key exists only for Devnet testing and has no mainnet purpose. Keeping the same demo address in browser storage is intentional: if the public faucet is rate-limited, a reviewer can fund that Devnet-only address once and reuse it across reloads and repeated demos.
 
 The **3.15M LQUSD** amount is synthetic stress-test notional. It is deliberately not represented as a real-valued token. The Devnet SOL transfer is execution/settlement proof for the demo route; it is not presented as a real 3.15M-value liquidity movement.
 
-**Status:** the self-contained proof path is implemented. The final public proof remains pending until a real Devnet transaction is successfully confirmed and recorded.
+**Status:** the proof path is implemented. The final public proof is complete only after a real Devnet transaction is successfully confirmed and recorded.
+
+## Faucet fallback
+
+Solana's public Devnet airdrop is rate-limited. If automatic funding returns a 429, Liquidity Clock keeps the same demo wallet and shows:
+
+- the full demo address;
+- **Copy demo address**;
+- the official Solana faucet;
+- the QuickNode Devnet faucet.
+
+After that address receives test SOL, press **Run Live Devnet Proof** again. No Phantom is required.
 
 ## Why no browser wallet is required
 
-This is a public testnet demonstration, not a custody flow. Requiring a reviewer to install/connect Phantom adds friction without improving the core proof. The MVP therefore uses a disposable in-memory keypair only for Devnet test SOL. A production system would use an institutional signer / custody policy layer rather than a raw browser keypair.
+This is a public testnet demonstration, not a custody flow. Requiring a reviewer to install/connect Phantom adds friction without improving the core proof. The MVP therefore uses a dedicated Devnet-only browser keypair. A production system would use an institutional signer / custody policy layer rather than a raw browser keypair.
 
 ## Run locally
 
@@ -69,7 +80,7 @@ Reviewers can change executable liquidity, stress outflow, next committed arriva
 
 - `engine.js` — deterministic survival-gap and intervention engine
 - `app.js` — scenarios, state, rendering and one-click proof flow
-- `solana-adapter.js` — self-contained temporary Devnet wallet + real execution proof
+- `solana-adapter.js` — persistent Devnet-only browser demo wallet + real execution proof
 - `index.html` / `styles.css` / `custom.css` — single-page institutional UI
 
 ## Public-safety boundary
@@ -81,9 +92,10 @@ All institutions, balances, rates, routes and timings in the public MVP are synt
 1. Open **Timing Stress**.
 2. Observe the initial `−7 min` Survival Gap.
 3. Click **Run Live Devnet Proof**.
-4. Watch `Prepare → Sign → Submit → Confirm → Complete`.
-5. Verify the real signature / slot / Explorer link.
-6. Observe the synthetic scenario move to `+14 min` only after confirmation.
+4. If automatic faucet funding is rate-limited, fund the displayed persistent Devnet address once and retry.
+5. Watch `Prepare → Sign → Submit → Confirm → Complete`.
+6. Verify the real signature / slot / Explorer link.
+7. Observe the synthetic scenario move to `+14 min` only after confirmation.
 
 ## Validation
 
