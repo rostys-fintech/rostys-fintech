@@ -2,7 +2,7 @@
 
 ## What existed before the hackathon
 
-The founder had previously worked on research questions around bank-run velocity and executable liquidity. That work remains private/submission-sensitive and is **not** reproduced in this repository.
+The founder had previously worked on academic questions in banking, financial stability and liquidity. That work remains private/submission-sensitive and is **not** reproduced in this repository.
 
 Pre-existing conceptual insight used here:
 
