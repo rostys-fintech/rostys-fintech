@@ -19,10 +19,12 @@ Treasury and liquidity-risk teams at digital-asset institutions such as exchange
 Digital-asset treasuries increasingly manage liquidity across several rails with different execution and settlement times. A single balance view does not capture whether those resources are executable by the required horizon. Liquidity Clock adds that timing layer.
 
 ## Why blockchain / why Solana?
-Solana is a verifiable execution rail in the product, not a decorative data layer. The MVP can run a real Devnet proof without requiring a user wallet: it creates a temporary in-memory Devnet keypair, obtains test SOL, signs locally, submits the transaction, waits for confirmation and surfaces the resulting signature, slot and execution timing. The synthetic treasury state changes only after confirmation.
+Solana is a verifiable execution rail in the product, not a decorative data layer. The MVP can attempt a real public test-cluster proof without requiring a user wallet or mainnet funds. It tries Devnet first and Testnet second, signs locally, submits when test SOL is available, waits for confirmation and surfaces the resulting signature, slot and execution timing. The synthetic treasury state changes only after a confirmed transaction.
+
+If public test funding is temporarily unavailable, the app shows a cryptographically signed `SIGNED / NOT BROADCAST` proof instead of pretending that a transaction confirmed. No slot or Explorer link is shown and the treasury state stays unchanged.
 
 ## What did you build?
-A public-safe single-page treasury stress engine with preset scenarios plus a Custom Stress mode, deterministic Survival Gap calculations, chronological route logic, intervention sufficiency checks, responsive animated UI and a self-contained Solana Devnet execution proof with real Explorer-verifiable output.
+A public-safe single-page treasury stress engine with preset scenarios plus a Custom Stress mode, deterministic Survival Gap calculations, chronological route logic, intervention sufficiency checks, responsive animated UI and a one-click Solana proof flow with an explicit distinction between Explorer-confirmed execution and signed-only fallback.
 
 ## What is unique?
 The product is centered on time-to-executable-liquidity rather than total balances. Its core metric, the Survival Gap, directly compares the treasury's remaining executable-buffer horizon with the arrival time of the next committed liquidity source.
@@ -52,13 +54,13 @@ Turn Liquidity Clock into an executable-liquidity orchestration layer that norma
 https://github.com/rostys-fintech/rostys-fintech/tree/liquidity-clock
 
 ## Website
-PENDING LIVE URL
+PENDING PERMANENT LIVE URL
 
 ## Pitch video
 PENDING
 
 ## Product demo
-PENDING
+PENDING EXPLORER-CONFIRMED TEST-CLUSTER PROOF
 
 ## Previous work / disclosure
 The founder had prior academic experience in banking, financial stability and liquidity. Private academic materials are not reproduced. The public product architecture, synthetic scenarios, Survival Gap implementation, UI, Solana adapter and submission package were developed as the hackathon productization layer.
